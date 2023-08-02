@@ -22,80 +22,59 @@ elif sys.platform.startswith("darwin"):
 else:
     dwf = cdll.LoadLibrary("libdwf.so")
 
-# continue running after device close, prevent temperature drifts
-dwf.FDwfParamSet(c_int(4), c_int(0)) # 4 = DwfParamOnClose, 0 = continue 1 = stop 2 = shutdown
-
-#print(DWF version
-version = create_string_buffer(16)
-dwf.FDwfGetVersion(version)
-print("DWF Version: "+str(version.value))
-
-#open device
-hdwf = c_int()
-print("Opening first device...")
-dwf.FDwfDeviceOpen(c_int(-1), byref(hdwf))
-
-if hdwf.value == hdwfNone.value:
-    print("failed to open device")
-    quit()
 
 
-hzMid = 10e3
-secSweep = 5e-3
-channel = c_int(0)
+def sample_signal(hzRate = 4e4,cSamples = 8*1024):
+        
+    # continue running after device close, prevent temperature drifts
+    dwf.FDwfParamSet(c_int(4), c_int(0)) # 4 = DwfParamOnClose, 0 = continue 1 = stop 2 = shutdown
 
-dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
-dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine)
-dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(2e6))
-dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0.1))
-dwf.FDwfAnalogOutNodeOffsetSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0))
+    #print(DWF version
+    version = create_string_buffer(16)
+    dwf.FDwfGetVersion(version)
+    print("DWF Version: "+str(version.value))
 
-dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeAM, c_bool(True))
-dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeAM, funcSine)
-dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeAM, c_double(10e3))
-dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeAM, c_double(40))
-dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, channel, AnalogOutNodeAM, c_double(50))
+    #open device
+    hdwf = c_int()
+    print("Opening first device...")
+    dwf.FDwfDeviceOpen(c_int(-1), byref(hdwf))
 
-# dwf.FDwfAnalogOutRunSet(hdwf, channel, c_double(secSweep*100))
-# dwf.FDwfAnalogOutRepeatSet(hdwf, channel, c_int(100))
+    if hdwf.value == hdwfNone.value:
+        print("failed to open device")
+        quit()    
+    
+    rgdSamples1 = (c_double*cSamples)()
+    # rgdSamples2 = (c_double*cSamples)()
+    sts = c_int()
 
+    print("Configure analog in")
+    dwf.FDwfAnalogInFrequencySet(hdwf, c_double(hzRate))
+    dwf.FDwfAnalogInChannelRangeSet(hdwf, c_int(-1), c_double(2))
+    dwf.FDwfAnalogInBufferSizeSet(hdwf, c_int(cSamples))
+    dwf.FDwfAnalogInTriggerSourceSet(hdwf, trigsrcAnalogOut1) 
+    dwf.FDwfAnalogInTriggerPositionSet(hdwf, c_double(0.6*cSamples/hzRate)) # trigger position at 20%, 0.5-0.3
 
-hzRate = 4e4 
-cSamples = 8*1024
-rgdSamples1 = (c_double*cSamples)()
-# rgdSamples2 = (c_double*cSamples)()
-sts = c_int()
+    print("Starting acquisition...")
+    dwf.FDwfAnalogInConfigure(hdwf, c_int(1), c_int(1))
 
-print("Configure analog in")
-dwf.FDwfAnalogInFrequencySet(hdwf, c_double(hzRate))
-dwf.FDwfAnalogInChannelRangeSet(hdwf, c_int(-1), c_double(4))
-dwf.FDwfAnalogInBufferSizeSet(hdwf, c_int(cSamples))
-dwf.FDwfAnalogInTriggerSourceSet(hdwf, trigsrcAnalogOut1) 
-dwf.FDwfAnalogInTriggerPositionSet(hdwf, c_double(0.6*cSamples/hzRate)) # trigger position at 20%, 0.5-0.3
+    while True:
+        dwf.FDwfAnalogInStatus(hdwf, c_int(1), byref(sts))
+        if sts.value == DwfStateArmed.value :
+            break
+        time.sleep(0.1)
+    print("   armed")
 
-print("Starting acquisition...")
-dwf.FDwfAnalogInConfigure(hdwf, c_int(1), c_int(1))
+    while True:
+        dwf.FDwfAnalogInStatus(hdwf, c_int(1), byref(sts))
+        if sts.value == DwfStateDone.value :
+            break
+        time.sleep(0.1)
+    print("   done")
 
-while True:
-    dwf.FDwfAnalogInStatus(hdwf, c_int(1), byref(sts))
-    if sts.value == DwfStateArmed.value :
-        break
-    time.sleep(0.1)
-print("   armed")
+    dwf.FDwfAnalogInStatusData(hdwf, c_int(0), rgdSamples1, len(rgdSamples1)) # get channel 1 data
 
-dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
-
-while True:
-    dwf.FDwfAnalogInStatus(hdwf, c_int(1), byref(sts))
-    if sts.value == DwfStateDone.value :
-        break
-    time.sleep(0.1)
-print("   done")
-
-dwf.FDwfAnalogInStatusData(hdwf, c_int(0), rgdSamples1, len(rgdSamples1)) # get channel 1 data
-
-
-dwf.FDwfDeviceCloseAll()
-
+    dwf.FDwfDeviceCloseAll()
+    
+    return numpy.array(rgdSamples1)
 # plt.plot(numpy.linspace(0, cSamples-1, cSamples), numpy.fromiter(rgdSamples1, dtype = numpy.float))
 # plt.show()
