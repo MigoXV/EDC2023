@@ -1,16 +1,18 @@
 # 导入必要的模块
 # import signal_output
 
-import signal_sampling
+
 import signal_preprocessing
 import signal_identification
 import parameter_estimation
 import signal_demodulation
 import user_interface
+import numpy
 
 def main():
     # 采样信号
-    signal_sample = signal_sampling.sample_signal()
+    import signal_sampling
+    signal_sample = numpy.loadtxt("data.dat")
 
     # 预处理信号
     preprocessed_signal = signal_preprocessing.preprocess_signal(signal_sample)
