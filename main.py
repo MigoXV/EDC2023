@@ -1,5 +1,5 @@
 # 导入必要的模块
-import signal_output
+# import signal_output
 
 import signal_sampling
 import signal_preprocessing
