@@ -51,11 +51,11 @@ dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(
 dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(1))
 dwf.FDwfAnalogOutNodeOffsetSet(hdwf, channel, AnalogOutNodeCarrier, c_double(1))
 
-dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeFM, c_bool(True))
-dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeFM, funcRampUp)
-dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeFM, c_double(1.0/secSweep))
-dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeFM, c_double(100.0*(hzStop-hzMid)/hzMid))
-dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, channel, AnalogOutNodeFM, c_double(100))
+dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeAM, c_bool(True))
+dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeAM, funcRampUp)
+dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeAM, c_double(1.0/secSweep))
+dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeAM, c_double(100.0*(hzStop-hzMid)/hzMid))
+dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, channel, AnalogOutNodeAM, c_double(100))
 
 dwf.FDwfAnalogOutRunSet(hdwf, channel, c_double(secSweep))
 dwf.FDwfAnalogOutRepeatSet(hdwf, channel, c_int(1))
