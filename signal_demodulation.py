@@ -33,3 +33,6 @@ def demodulate_signal(signal_type, preprocessed_signal):
     # 以此类推，对于其他类型的信号，我们也可以添加相应的解调代码...
 
     return demodulated_signal
+
+def demodulation_am():
+    pass
