@@ -1,9 +1,15 @@
 # 导入必要的库，例如 numpy
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import hilbert
 
-def am_demodulation():
-    print("am demodulation")
+def am_demodulation(modulated_wave):
+    # 使用希尔伯特转换找到解析信号
+    analytic_signal = hilbert(modulated_wave)
+    # 计算解析信号的绝对值，得到解调信号
+    envelope = np.abs(analytic_signal)
+
+    return envelope
 
 def fm_demodulation():
     pass
@@ -41,7 +47,7 @@ def demodulate_signal(signal_type, preprocessed_signal):
     if signal_type == 'AM':
         # 示例: 对于 'AM' 信号，我们可能会进行解调
         # 这可以通过将信号转换为其绝对值来简单地实现
-        demodulated_signal = am_demodulation()
+        demodulated_signal = am_demodulation(preprocessed_signal)
 
     elif signal_type == 'FM':
         # 对于 'FM' 信号，我们可能需要进行更复杂的解调过程
@@ -75,9 +81,10 @@ if __name__=="__main__":
     print("omega0=","{:.5f}".format(omega0))
 
     modulating_wave=v_omega*np.sin(omega0*n)
+    plt.subplot(2,2,1)
     plt.plot(modulating_wave)
     plt.title('modulating_wave')
-    plt.show()
+    # plt.show()
 
     Tc=fs/fcarrier
     print("Tc=",Tc)
@@ -85,15 +92,22 @@ if __name__=="__main__":
     print("omegac=","{:.5f}".format(omegac))
 
     carrier=v0*np.sin(omegac*n)
+    plt.subplot(2,2,2)
     plt.plot(carrier)
     plt.title('carrier')
-    plt.show()
+    # plt.show()
 
 
     modulated_wave=(v0+ka*modulating_wave)*carrier
+    plt.subplot(2,2,3)
     plt.plot(modulated_wave)
-    plt.show()
+    # plt.show()
 
-    demodulate_signal('AM',modulated_wave)
+    result=demodulate_signal('AM',modulated_wave)
+    plt.subplot(2,2,4)
+    plt.plot(result)
+    
+    plt.show()
+    
 
 
