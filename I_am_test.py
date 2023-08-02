@@ -5,7 +5,7 @@ import signal_demodulation
 
 point=8192
 n=np.array(range(point))
-v0=0.1
+v0=0.1/2
 v_omega=0.01
 # ka=8
 # ma=ka*v_omega/v0
