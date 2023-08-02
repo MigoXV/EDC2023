@@ -25,8 +25,8 @@ else:
 with open('config,json') as f:
     result=json.loads(f.read())
 
-nSamples=result['nSamples']
-fs=result['fs']
+cSamples=result['nSamples']
+hzFreq=result['fs']
 
 # continue running after device close, prevent temperature drifts
 dwf.FDwfParamSet(c_int(4), c_int(0)) # 4 = DwfParamOnClose, 0 = continue 1 = stop 2 = shutdown
@@ -46,8 +46,8 @@ if hdwf.value == hdwfNone.value:
     quit()
 
 
-hzFreq = 8e6
-cSamples = 8192
+# hzFreq = 8e6
+# cSamples = 8192
 hdwf = c_int()
 rgdSamples = (c_double*cSamples)()
 channel = c_int(0)
