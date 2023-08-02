@@ -39,29 +39,28 @@ if hdwf.value == hdwfNone.value:
     print("failed to open device")
     quit()
 
-hzStart = 1e3
-hzStop = 20e3
-hzMid = (hzStart+hzStop)/2
+
+hzMid = 10e3
 secSweep = 5e-3
 channel = c_int(0)
 
 dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
 dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine)
-dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(hzMid))
-dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(1))
-dwf.FDwfAnalogOutNodeOffsetSet(hdwf, channel, AnalogOutNodeCarrier, c_double(1))
+dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(2e6))
+dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0.1))
+dwf.FDwfAnalogOutNodeOffsetSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0))
 
 dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeAM, c_bool(True))
-dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeAM, funcRampUp)
-dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeAM, c_double(1.0/secSweep))
-dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeAM, c_double(100.0*(hzStop-hzMid)/hzMid))
-dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, channel, AnalogOutNodeAM, c_double(100))
+dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeAM, funcSine)
+dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeAM, c_double(10e3))
+dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeAM, c_double(40))
+dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, channel, AnalogOutNodeAM, c_double(50))
 
-dwf.FDwfAnalogOutRunSet(hdwf, channel, c_double(secSweep))
-dwf.FDwfAnalogOutRepeatSet(hdwf, channel, c_int(1))
+# dwf.FDwfAnalogOutRunSet(hdwf, channel, c_double(secSweep*100))
+# dwf.FDwfAnalogOutRepeatSet(hdwf, channel, c_int(100))
 
 
-hzRate = 4e6 
+hzRate = 4e4 
 cSamples = 8*1024
 rgdSamples1 = (c_double*cSamples)()
 # rgdSamples2 = (c_double*cSamples)()
@@ -72,7 +71,7 @@ dwf.FDwfAnalogInFrequencySet(hdwf, c_double(hzRate))
 dwf.FDwfAnalogInChannelRangeSet(hdwf, c_int(-1), c_double(4))
 dwf.FDwfAnalogInBufferSizeSet(hdwf, c_int(cSamples))
 dwf.FDwfAnalogInTriggerSourceSet(hdwf, trigsrcAnalogOut1) 
-dwf.FDwfAnalogInTriggerPositionSet(hdwf, c_double(0.3*cSamples/hzRate)) # trigger position at 20%, 0.5-0.3
+dwf.FDwfAnalogInTriggerPositionSet(hdwf, c_double(0.6*cSamples/hzRate)) # trigger position at 20%, 0.5-0.3
 
 print("Starting acquisition...")
 dwf.FDwfAnalogInConfigure(hdwf, c_int(1), c_int(1))
@@ -98,5 +97,5 @@ dwf.FDwfAnalogInStatusData(hdwf, c_int(0), rgdSamples1, len(rgdSamples1)) # get 
 
 dwf.FDwfDeviceCloseAll()
 
-plt.plot(numpy.linspace(0, cSamples-1, cSamples), numpy.fromiter(rgdSamples1, dtype = numpy.float))
-plt.show()
+# plt.plot(numpy.linspace(0, cSamples-1, cSamples), numpy.fromiter(rgdSamples1, dtype = numpy.float))
+# plt.show()
