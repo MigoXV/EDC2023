@@ -14,6 +14,7 @@ import time
 import matplotlib.pyplot as plt
 import sys
 import numpy
+import json
 
 if sys.platform.startswith("win"):
     dwf = cdll.dwf
@@ -22,10 +23,15 @@ elif sys.platform.startswith("darwin"):
 else:
     dwf = cdll.LoadLibrary("libdwf.so")
 
+with open('config,json') as f:
+    result=json.loads(f.read())
+
+nSamples=result['nSamples']
+fs=result['fs']
 #declare ctype variables
 hdwf = c_int()
 sts = c_byte()
-rgdSamples = (c_double*8192)()
+rgdSamples = (c_double*nSamples)()
 
 version = create_string_buffer(16)
 dwf.FDwfGetVersion(version)
@@ -47,8 +53,8 @@ dwf.FDwfAnalogInBufferSizeInfo(hdwf, 0, byref(cBufMax))
 print("Device buffer size: "+str(cBufMax.value)) 
 
 #set up acquisition
-dwf.FDwfAnalogInFrequencySet(hdwf, c_double(10e6))
-dwf.FDwfAnalogInBufferSizeSet(hdwf, c_int(8192)) 
+dwf.FDwfAnalogInFrequencySet(hdwf, c_double(fs))
+dwf.FDwfAnalogInBufferSizeSet(hdwf, c_int(nSamples)) 
 dwf.FDwfAnalogInChannelEnableSet(hdwf, c_int(-1), c_bool(True))
 dwf.FDwfAnalogInChannelRangeSet(hdwf, c_int(-1), c_double(5))
 dwf.FDwfAnalogInChannelFilterSet(hdwf, c_int(-1), filterDecimate)
@@ -67,7 +73,7 @@ while True:
     time.sleep(0.1)
 print("Acquisition done")
 
-dwf.FDwfAnalogInStatusData(hdwf, 0, rgdSamples, 8192) # get channel 1 data
+dwf.FDwfAnalogInStatusData(hdwf, 0, rgdSamples, nSamples) # get channel 1 data
 #dwf.FDwfAnalogInStatusData(hdwf, 1, rgdSamples, 4000) # get channel 2 data
 dwf.FDwfDeviceCloseAll()
 

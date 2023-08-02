@@ -13,7 +13,7 @@ from dwfconstants import *
 import sys
 import matplotlib.pyplot as plt
 import numpy
-
+import json
 
 if sys.platform.startswith("win"):
     dwf = cdll.dwf
@@ -21,6 +21,12 @@ elif sys.platform.startswith("darwin"):
     dwf = cdll.LoadLibrary("/Library/Frameworks/dwf.framework/dwf")
 else:
     dwf = cdll.LoadLibrary("libdwf.so")
+
+with open('config,json') as f:
+    result=json.loads(f.read())
+
+nSamples=result['nSamples']
+fs=result['fs']
 
 # continue running after device close, prevent temperature drifts
 dwf.FDwfParamSet(c_int(4), c_int(0)) # 4 = DwfParamOnClose, 0 = continue 1 = stop 2 = shutdown
