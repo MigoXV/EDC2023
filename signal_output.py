@@ -40,13 +40,20 @@ if hdwf.value == hdwfNone.value:
     quit()
 
 
-hzFreq = 10e6
+hzFreq = 8e6
 cSamples = 8192
 hdwf = c_int()
 rgdSamples = (c_double*cSamples)()
 channel = c_int(0)
 
-rgdSamples=numpy.loadtxt('result.dat')
+# 从数据文件中读取数据，并保存到列表中
+with open('result.dat', 'r') as file:
+    data = file.readlines()
+
+
+# 将数据转换为double类型，并保存到ctypes数组中
+for i in range(cSamples):
+    rgdSamples[i] = c_double(float(data[i]))
 
 # dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
 # dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine)

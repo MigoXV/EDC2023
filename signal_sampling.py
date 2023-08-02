@@ -47,7 +47,7 @@ dwf.FDwfAnalogInBufferSizeInfo(hdwf, 0, byref(cBufMax))
 print("Device buffer size: "+str(cBufMax.value)) 
 
 #set up acquisition
-dwf.FDwfAnalogInFrequencySet(hdwf, c_double(10e6))
+dwf.FDwfAnalogInFrequencySet(hdwf, c_double(8e6))
 dwf.FDwfAnalogInBufferSizeSet(hdwf, c_int(8192)) 
 dwf.FDwfAnalogInChannelEnableSet(hdwf, c_int(-1), c_bool(True))
 dwf.FDwfAnalogInChannelRangeSet(hdwf, c_int(-1), c_double(5))

@@ -30,7 +30,9 @@ def main():
     user_interface.display_results(signal_type, parameters)
 
     # 输出解调信号供示波器观测
-    user_interface.output_signal(demodulated_signal)
+    user_interface.output_signal()
 
+    
+    
 if __name__ == "__main__":
     main()

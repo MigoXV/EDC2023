@@ -49,6 +49,12 @@ def display_signal_info(signal_type, signal_params):
     for param_name, param_value in signal_params.items():
         print(f'{param_name}: {param_value}')
         
+def display_results():
+    pass
+
+def output_signal():
+    import signal_output
+
 if __name__=="__main__":
     n=np.array(range(1000))/1000
     a=np.sin(n*2*np.pi)
