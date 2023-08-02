@@ -46,24 +46,33 @@ if hdwf.value == hdwfNone.value:
     quit()
 
 
-hzMid = 10e3
-secSweep = 5e-3
+hzFreq = 8e6
+cSamples = 8192
+hdwf = c_int()
+rgdSamples = (c_double*cSamples)()
 channel = c_int(0)
 
+# 从数据文件中读取数据，并保存到列表中
+with open('result.dat', 'r') as file:
+    data = file.readlines()
+
+
+# 将数据转换为double类型，并保存到ctypes数组中
+for i in range(cSamples):
+    rgdSamples[i] = c_double(float(data[i]))
+
+# dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
+# dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine)
+# dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(2e6))
+# dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0.1))
+# dwf.FDwfAnalogOutNodeOffsetSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0))
+
+print("Generating custom waveform...")
 dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
-dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine)
-dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(2e6))
-dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0.1))
-dwf.FDwfAnalogOutNodeOffsetSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0))
-
-dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeAM, c_bool(True))
-dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeAM, funcSine)
-dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeAM, c_double(10e3))
-dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeAM, c_double(40))
-dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, channel, AnalogOutNodeAM, c_double(50))
-
-# dwf.FDwfAnalogOutRunSet(hdwf, channel, c_double(secSweep*100))
-# dwf.FDwfAnalogOutRepeatSet(hdwf, channel, c_int(100))
+dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcCustom) 
+dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples, c_int(cSamples))
+dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(hzFreq)) 
+dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(2.0))
 dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
 
 dwf.FDwfDeviceCloseAll()
