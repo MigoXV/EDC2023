@@ -1,5 +1,6 @@
 # 导入必要的库
 import matplotlib.pyplot as plt
+import numpy as np
 
 def plot_demodulated_signal(demodulated_signal, signal_type):
     """
@@ -23,7 +24,7 @@ def plot_demodulated_signal(demodulated_signal, signal_type):
     plt.title(f'Demodulated signal of type {signal_type}')
 
     # 设置图形的x轴标签
-    plt.xlabel('Time')
+    plt.xlabel('n')
 
     # 设置图形的y轴标签
     plt.ylabel('Amplitude')
@@ -47,3 +48,8 @@ def display_signal_info(signal_type, signal_params):
 
     for param_name, param_value in signal_params.items():
         print(f'{param_name}: {param_value}')
+        
+if __name__=="__main__":
+    n=np.array(range(1000))/1000
+    a=np.sin(n*2*np.pi)
+    plot_demodulated_signal(a,'test wave')
