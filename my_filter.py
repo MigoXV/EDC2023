@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.signal
-
+import matplotlib.pyplot as plt
 
 def AM_filter(origin_signal):
     B = np.array(
@@ -13,9 +13,16 @@ def AM_filter(origin_signal):
             0
         ]
         )
-    BL = 21
-    output_signal=scipy.signal.lfilter(B,1,origin_signal)
+    # BL = 21
+    output_signal=np.convolve(B,origin_signal,'same')
     return output_signal
 
 if __name__=="__main__":
-    pass
+    
+    origin_data=np.loadtxt('result.dat')
+    result=AM_filter(origin_data)
+    plt.subplot(2,1,1)
+    plt.plot(origin_data)
+    plt.subplot(2,1,2)
+    plt.plot(result)
+    plt.show()

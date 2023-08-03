@@ -48,7 +48,8 @@ def demodulate_signal(signal_type, preprocessed_signal):
     if signal_type == 'AM':
 
         demodulated_signal = am_demodulation(preprocessed_signal)
-        demodulated_signal = my_filter.AM_filter()
+        filted_signal = my_filter.AM_filter()
+        return filted_signal
         
 
     elif signal_type == 'FM':
