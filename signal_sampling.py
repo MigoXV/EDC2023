@@ -33,12 +33,13 @@ hdwf = c_int()
 sts = c_byte()
 rgdSamples = (c_double*nSamples)()
 
-version = create_string_buffer(16)
-dwf.FDwfGetVersion(version)
-print("DWF Version: "+str(version.value))
+# version = create_string_buffer(16)
+# dwf.FDwfGetVersion(version)
+# print("DWF Version: "+str(version.value))
 
 #open device
-print("Opening first device")
+print("===========================================================================")
+print("Opening first device for input")
 dwf.FDwfDeviceOpen(c_int(-1), byref(hdwf))
 
 if hdwf.value == hdwfNone.value:
@@ -48,9 +49,9 @@ if hdwf.value == hdwfNone.value:
     print("failed to open device")
     quit()
 
-cBufMax = c_int()
-dwf.FDwfAnalogInBufferSizeInfo(hdwf, 0, byref(cBufMax))
-print("Device buffer size: "+str(cBufMax.value)) 
+# cBufMax = c_int()
+# dwf.FDwfAnalogInBufferSizeInfo(hdwf, 0, byref(cBufMax))
+# print("Device buffer size: "+str(cBufMax.value)) 
 
 #set up acquisition
 dwf.FDwfAnalogInFrequencySet(hdwf, c_double(fs))
@@ -88,3 +89,6 @@ numpy.savetxt('data.dat',rgdSamples)
 data=numpy.loadtxt('data.dat')
 # plt.plot(data)
 # plt.show()
+
+print("data has been loaded into file data.dat")
+print("===========================================================================")
