@@ -22,7 +22,7 @@ elif sys.platform.startswith("darwin"):
 else:
     dwf = cdll.LoadLibrary("libdwf.so")
 
-with open('config,json') as f:
+with open('config.json') as f:
     result=json.loads(f.read())
 
 cSamples=result['nSamples']
@@ -48,7 +48,7 @@ if hdwf.value == hdwfNone.value:
 
 # hzFreq = 8e6
 # cSamples = 8192
-hdwf = c_int()
+# hdwf = c_int()
 rgdSamples = (c_double*cSamples)()
 channel = c_int(0)
 
@@ -71,7 +71,7 @@ print("Generating custom waveform...")
 dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
 dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcCustom) 
 dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples, c_int(cSamples))
-dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(hzFreq)) 
+dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(hzFreq/cSamples)) 
 dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(2.0))
 dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
 
