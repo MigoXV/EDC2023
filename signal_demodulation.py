@@ -18,7 +18,7 @@ def am_demodulation(modulated_wave):
 def fm_demodulation(data):
     fc=2e6
     fs=8e6
-
+    global max_frequency_deviation
     t = np.arange(len(data)) / fs
 
     # 使用希尔伯特变换得到解析信号
@@ -31,12 +31,12 @@ def fm_demodulation(data):
     frequency_deviation = np.diff(instantaneous_phase) / (2.0*np.pi) * 8e6
         
     # # 计算最大频偏
-    max_frequency_deviation = np.max(np.abs(frequency_deviation[200:-199]))
+    # max_frequency_deviation = np.max(np.abs(frequency_deviation[200:-199]))
+    max_frequency_deviation = np.max(np.abs((frequency_deviation - np.mean(frequency_deviation))[200:-199]))
+    
     params={}
     params["DFmax"]=max_frequency_deviation
-    with open('parameter.json','w',encoding='UTF-8') as f:
-        f.write(json.dumps(params))
-    np.savetxt('frequency_deviation.dat',frequency_deviation)
+
     # plt.plot(frequency_deviation)
     # plt.savefig('max_frequency_deviation.png')
     frequency_deviation=np.append(frequency_deviation,frequency_deviation[-1])
@@ -45,6 +45,10 @@ def fm_demodulation(data):
     baseband = frequency_deviation - 2e6
     
     baseband=baseband/np.max(baseband[2000:6000])
+    
+    with open('parameter.json','w',encoding='UTF-8') as f:
+        f.write(json.dumps(params))
+    np.savetxt('frequency_deviation.dat',frequency_deviation)
     
     return baseband
 
@@ -91,8 +95,8 @@ def demodulate_signal(signal_type, preprocessed_signal):
         # 这里我们只是用一个占位符来代替真实的解调信号
         demodulated_signal = fm_demodulation(preprocessed_signal)
         filted_signal = my_filter.FM_filter_after(demodulated_signal)
-        filted_signal[:39] = filted_signal[39]
-        filted_signal[-40:] = filted_signal[-40]
+        filted_signal[:139] = filted_signal[139]
+        filted_signal[-140:] = filted_signal[-140]
         return filted_signal
     # 以此类推，对于其他类型的信号，我们也可以添加相应的解调代码...
 
@@ -100,11 +104,14 @@ def demodulate_signal(signal_type, preprocessed_signal):
 
 if __name__=="__main__":
     data=np.loadtxt('data.dat')
-    result=demodulate_signal('FM',data)
-    
+    filterd_data=my_filter.pre_filter(data)
+    result=demodulate_signal('FM',filterd_data)
+    print("设置:5K")
+    print('max_frequency_deviation:',max_frequency_deviation)
     plt.plot(result)
     plt.show()
     plt.savefig('test-signal-demodulation.png')
+    import test_plot
  
 
 
