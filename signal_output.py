@@ -32,13 +32,14 @@ hzFreq=result['fs']
 dwf.FDwfParamSet(c_int(4), c_int(0)) # 4 = DwfParamOnClose, 0 = continue 1 = stop 2 = shutdown
 
 #print(DWF version
-version = create_string_buffer(16)
-dwf.FDwfGetVersion(version)
-print("DWF Version: "+str(version.value))
+# version = create_string_buffer(16)
+# dwf.FDwfGetVersion(version)
+# print("DWF Version: "+str(version.value))
 
 #open device
 hdwf = c_int()
-print("Opening first device...")
+print("===========================================================================")
+print("Opening first device for output")
 dwf.FDwfDeviceOpen(c_int(-1), byref(hdwf))
 
 if hdwf.value == hdwfNone.value:
@@ -67,7 +68,7 @@ for i in range(cSamples):
 # dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0.1))
 # dwf.FDwfAnalogOutNodeOffsetSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0))
 
-print("Generating custom waveform...")
+print("Generating custom waveform from file result.dat")
 dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
 dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcCustom) 
 dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples, c_int(cSamples))
@@ -76,4 +77,4 @@ dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(
 dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
 
 dwf.FDwfDeviceCloseAll()
-
+print("===========================================================================")
