@@ -47,6 +47,16 @@ def AM_filter_after(origin_signal):
     output_signal=np.convolve(B,origin_signal,'same')
     return output_signal
 
+def FM_filter_after(origin_signal):
+    a=1
+    numtaps=51
+    B=scipy.signal.firwin(numtaps,[4.8e3/fs,5.2e3/fs],pass_zero=False)
+    # plt.plot(abs(np.fft.fft(B)))
+    # plt.show()
+    output_signal=np.convolve(B,origin_signal,'same')
+    return output_signal        
+
+
 if __name__=="__main__":
     test_filter('data.dat',AM_filter_before)
         
