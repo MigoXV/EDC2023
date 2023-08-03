@@ -54,9 +54,9 @@ rgdSamples = (c_double*cSamples)()
 channel = c_int(0)
 
 # 从数据文件中读取数据，并保存到列表中
-with open('result.dat', 'r') as file:
-    data = file.readlines()
-
+# with open('result.dat', 'r') as file:
+#     data = file.readlines()
+data=np.loadtxt('result.dat')
 
 # 将数据转换为double类型，并保存到ctypes数组中
 for i in range(cSamples):
