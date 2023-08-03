@@ -6,3 +6,6 @@ data-am.dat
 data-fm.dat
 *.png
 frequency_deviation.dat
+
+parameter.json
+*.dat
