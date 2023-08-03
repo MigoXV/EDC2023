@@ -23,7 +23,7 @@ elif sys.platform.startswith("darwin"):
 else:
     dwf = cdll.LoadLibrary("libdwf.so")
 
-with open('config,json') as f:
+with open('config.json') as f:
     result=json.loads(f.read())
 
 nSamples=result['nSamples']
