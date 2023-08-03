@@ -1,7 +1,7 @@
 # 导入必要的库，例如 numpy
 import numpy as np
 
-def estimate_parameters(signal_type, preprocessed_signal):
+def estimate_parameters(signal_type, demodulated_signal):
     """
     根据预处理过的信号和它的类型估计信号的参数。
 
@@ -21,7 +21,7 @@ def estimate_parameters(signal_type, preprocessed_signal):
     if signal_type == 'AM':
         # 示例: 对于 'AM' 信号，我们可能会估计调幅系数 'ma'，
         # 这可以通过测量信号的峰峰值来简单地估计
-        params['ma'] = np.max(preprocessed_signal) - np.min(preprocessed_signal)
+        params['ma'] = (np.max(demodulated_signal) - np.min(demodulated_signal))/np.max(demodulated_signal)
 
     elif signal_type == 'FM':
         # 对于 'FM' 信号，我们可能需要估计调频系数 'mf' 和最大频偏 'delta_f_max'
@@ -33,3 +33,11 @@ def estimate_parameters(signal_type, preprocessed_signal):
     # 以此类推，对于其他类型的信号，我们也可以添加相应的参数估计代码...
 
     return params
+
+if __name__ == "__main__":
+    result=np.loadtxt('result.dat')
+    estimate_parameters('AM',result)
+    
+# 75 {'ma': 0.8756927051634225}
+# 100 {'ma': 0.9681466583590149}
+    
