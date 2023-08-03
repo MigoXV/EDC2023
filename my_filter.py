@@ -1,8 +1,37 @@
 import numpy as np
 import scipy.signal
 import matplotlib.pyplot as plt
+import json
 
-def AM_filter(origin_signal):
+with open('config.json') as f:
+    config=json.loads(f.read())
+
+fs=config['fs']
+nSamples=config['nSamples']
+
+def test_filter(filename,filter_func):
+    def warpfunc():
+        origin_data=np.loadtxt(filename)
+        result=filter_func(origin_data)
+        plt.subplot(2,1,1)
+        plt.plot(origin_data)
+        plt.subplot(2,1,2)
+        plt.plot(result)
+        plt.show()
+    
+    warpfunc()
+        
+
+def AM_filter_before(origin_signal):
+    a=1
+    numtaps=51
+    B=scipy.signal.firwin(numtaps,[1.8e6/fs,2.2e6/fs],pass_zero=False)
+    plt.plot(abs(np.fft.fft(B)))
+    plt.show()
+    output_signal=np.convolve(B,origin_signal,'same')
+    return output_signal    
+
+def AM_filter_after(origin_signal):
     B = np.array(
         [
             0, 0.004259777142907,  0.01205719520257,  0.02286394914624,
@@ -13,16 +42,11 @@ def AM_filter(origin_signal):
             0
         ]
         )
+    a=origin_signal
     # BL = 21
     output_signal=np.convolve(B,origin_signal,'same')
     return output_signal
 
 if __name__=="__main__":
-    
-    origin_data=np.loadtxt('result.dat')
-    result=AM_filter(origin_data)
-    plt.subplot(2,1,1)
-    plt.plot(origin_data)
-    plt.subplot(2,1,2)
-    plt.plot(result)
-    plt.show()
+    test_filter('data.dat',AM_filter_before)
+        
