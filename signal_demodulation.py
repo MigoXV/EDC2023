@@ -26,6 +26,10 @@ def fm_demodulation(data):
 
     # 对相位进行差分，并考虑采样时间得到频率偏移
     frequency_deviation = np.diff(instantaneous_phase) / (2.0*np.pi) * 8e6
+        
+    # 计算最大频偏
+    max_frequency_deviation = np.max(np.abs(frequency_deviation))
+
     
     frequency_deviation=np.append(frequency_deviation,frequency_deviation[-1])
     
