@@ -9,8 +9,13 @@ import signal_demodulation
 import user_interface
 import numpy as np
 import matplotlib.pyplot as plt
+import json
 
 def main():
+    params={}
+    with open('parameter.json','w',encoding='UTF-8') as f:
+        f.write(json.dumps(params))
+    
     # 采样信号
     import signal_sampling
     signal_sample = np.loadtxt("data.dat")
@@ -33,7 +38,7 @@ def main():
     
     # 参数估计
     parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
-    
+    print('最大频偏:20K')
     # 显示结果
     user_interface.display_signal_info(signal_type, parameters)
 

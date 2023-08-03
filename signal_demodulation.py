@@ -3,6 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import hilbert
 import my_filter
+import json
+
+max_frequency_deviation=0
 
 def am_demodulation(modulated_wave):
     # 使用希尔伯特转换找到解析信号
@@ -28,9 +31,13 @@ def fm_demodulation(data):
     frequency_deviation = np.diff(instantaneous_phase) / (2.0*np.pi) * 8e6
         
     # 计算最大频偏
-    max_frequency_deviation = np.max(np.abs(frequency_deviation))
-
-    
+    max_frequency_deviation = np.max(np.abs(frequency_deviation[200:-199]))
+    params={}
+    params["DFmax"]=max_frequency_deviation
+    with open('parameter.json','w',encoding='UTF-8') as f:
+        f.write(json.dumps(params))
+    plt.plot(frequency_deviation)
+    plt.savefig('max_frequency_deviation.png')
     frequency_deviation=np.append(frequency_deviation,frequency_deviation[-1])
     
     # FM信号的载波频率为2MHz，得到基带信号
