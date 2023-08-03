@@ -26,10 +26,12 @@ def fm_demodulation(data):
 
     # 对相位进行差分，并考虑采样时间得到频率偏移
     frequency_deviation = np.diff(instantaneous_phase) / (2.0*np.pi) * 8e6
-
+    
+    frequency_deviation=np.append(frequency_deviation,frequency_deviation[-1])
+    
     # FM信号的载波频率为2MHz，得到基带信号
     baseband = frequency_deviation - 2e6
-
+    
     return baseband
 
 def cw_demodulation():
