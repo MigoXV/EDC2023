@@ -1,8 +1,8 @@
 import numpy as np
-from scipy.signal import hilbert
+from scipy.signal import hilbert, fftconvolve
 from scipy.fftpack import fft, fftfreq
 
-def identify_modulation(data_file):
+def identify_modulation(data_file, window_size=1000):
     # 加载数据
     data = np.loadtxt(data_file)
 
@@ -22,12 +22,18 @@ def identify_modulation(data_file):
     # 计算幅度频谱
     amplitude_spectrum = 2.0 / len(data) * np.abs(yf[:len(data)//2])
 
+    # 计算幅度包络的滑动窗口变化率
+    amplitude_envelope_diff = np.std(fftconvolve(amplitude_envelope, np.ones(window_size), 'valid') / window_size)
+
+    print('amplitude_envelope_diff:',amplitude_envelope_diff)
+    print('np.mean(np.abs(instantaneous_frequency)):',np.mean(np.abs(instantaneous_frequency)))
+    
     # 检查信号是AM还是FM
-    if np.max(amplitude_envelope) > 0.1 and np.mean(np.abs(instantaneous_frequency)) < 2e6:
+    if amplitude_envelope_diff > 0.005 and np.mean(np.abs(instantaneous_frequency)) < 2e6:
         print('信号是幅度调制（AM）。')
-    elif np.max(amplitude_envelope) <= 0.1 and np.mean(np.abs(instantaneous_frequency)) >= 2e6:
+    elif amplitude_envelope_diff <= 0.005 and np.mean(np.abs(instantaneous_frequency)) >= 2e6:
         print('信号是频率调制（FM）。')
     else:
         print('信号不能明确地对应AM或FM调制。')
 
-identify_modulation('data.dat')
+identify_modulation('data-am.dat')
