@@ -48,7 +48,7 @@ def demodulate_signal(signal_type, preprocessed_signal):
     if signal_type == 'AM':
 
         demodulated_signal = am_demodulation(preprocessed_signal)
-        filted_signal = my_filter.AM_filter()
+        filted_signal = my_filter.AM_filter_after(demodulated_signal)
         return filted_signal
         
 
@@ -63,7 +63,12 @@ def demodulate_signal(signal_type, preprocessed_signal):
     return demodulated_signal
 
 if __name__=="__main__":
-    import I_am_test
+    data=np.loadtxt('data.dat')
+    result=demodulate_signal('AM',data)
+    
+    plt.plot(result)
+    plt.show()
+    np.savetxt('result.dat',result)
     
     # point=8192
     # n=np.array(range(point))
