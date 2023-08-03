@@ -29,10 +29,12 @@ def main():
 
     np.savetxt('result.dat',demodulated_signal)
     plt.savefig('result.png')
+    
     # 参数估计
-    # parameters = parameter_estimation.estimate_parameters(signal_type,preprocessed_signal)
+    parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal)
+    
     # 显示结果
-    # user_interface.display_results(signal_type, parameters)
+    user_interface.display_signal_info(signal_type, parameters)
 
     # 输出解调信号供示波器观测
     user_interface.output_signal()
