@@ -12,8 +12,23 @@ def am_demodulation(modulated_wave):
 
     return envelope
 
-def fm_demodulation():
-    pass
+def fm_demodulation(preprocessed_signal):
+    fc=2e6
+    fs=8e6
+
+    # 计算相位
+    phase = np.angle(np.fft.ifft(preprocessed_signal))
+
+    # 处理相位跳变
+    phase_unwrapped = np.unwrap(phase)
+
+    # 计算相位差分
+    phase_diff = np.diff(phase_unwrapped)
+
+    # 计算调制信号
+    modulation_signal = fs * phase_diff / (2.0*np.pi*fc)
+
+    return modulation_signal
 
 def cw_demodulation():
     pass
@@ -56,7 +71,7 @@ def demodulate_signal(signal_type, preprocessed_signal):
         # 对于 'FM' 信号，我们可能需要进行更复杂的解调过程
         # 这可能需要通过傅里叶变换或其他频率分析技术来实现
         # 这里我们只是用一个占位符来代替真实的解调信号
-        demodulated_signal = fm_demodulation()
+        demodulated_signal = fm_demodulation(preprocessed_signal)
 
     # 以此类推，对于其他类型的信号，我们也可以添加相应的解调代码...
 
@@ -64,59 +79,11 @@ def demodulate_signal(signal_type, preprocessed_signal):
 
 if __name__=="__main__":
     data=np.loadtxt('data.dat')
-    result=demodulate_signal('AM',data)
+    result=demodulate_signal('FM',data)
     
     plt.plot(result)
     plt.show()
     np.savetxt('result.dat',result)
-    
-    # point=8192
-    # n=np.array(range(point))
-    # v0=0.1
-    # v_omega=0.01
-    # # ka=8
-    # # ma=ka*v_omega/v0
-    # ma=0.5
-    # ka=ma*v0/v_omega
-    # print(f'ka={ka:.2f}')
-    # fs=10e6
-    # fa=10e3
-    # fcarrier=2e6
-    # V_omega=0.01
-
-    # T=fs/fa
-    # print("T=",T)
-    # omega0=2*np.pi/T
-    # print("omega0=","{:.5f}".format(omega0))
-
-    # modulating_wave=v_omega*np.sin(omega0*n)
-    # plt.subplot(2,2,1)
-    # plt.plot(modulating_wave)
-    # plt.title('modulating_wave')
-    # # plt.show()
-
-    # Tc=fs/fcarrier
-    # print("Tc=",Tc)
-    # omegac=2*np.pi/Tc
-    # print("omegac=","{:.5f}".format(omegac))
-
-    # carrier=v0*np.sin(omegac*n)
-    # plt.subplot(2,2,2)
-    # plt.plot(carrier)
-    # plt.title('carrier')
-    # # plt.show()
-
-
-    # modulated_wave=(v0+ka*modulating_wave)*carrier
-    # plt.subplot(2,2,3)
-    # plt.plot(modulated_wave)
-    # # plt.show()
-
-    # result=demodulate_signal('AM',modulated_wave)
-    # plt.subplot(2,2,4)
-    # plt.plot(result)
-    
-    # plt.show()
-    
+ 
 
 
