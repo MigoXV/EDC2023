@@ -21,7 +21,7 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
     if signal_type == 'AM':
         # 示例: 对于 'AM' 信号，我们可能会估计调幅系数 'ma'，
         # 这可以通过测量信号的峰峰值来简单地估计
-        params['ma'] = 2*(np.max(demodulated_signal[4000:6000]) - np.min(demodulated_signal[4000:6000]))/(np.max(preprocessed_signal[3000:6000]) - np.min(preprocessed_signal[3000:6000]))
+        params['ma'] = 2*(np.max(demodulated_signal[200:7800]) - np.min(demodulated_signal[200:7800]))/(np.max(preprocessed_signal[200:7800]) - np.min(preprocessed_signal[200:7800]))
         params['ma'] = params['ma']*1.2710863155094008252182992122047-0.3213175708408039188486140810474
 
     elif signal_type == 'FM':

@@ -32,7 +32,7 @@ def main():
     plt.savefig('result.png')
     
     # 参数估计
-    parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal)
+    parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
     
     # 显示结果
     user_interface.display_signal_info(signal_type, parameters)
