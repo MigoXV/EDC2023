@@ -66,7 +66,16 @@ def pre_filter(origin_signal):
     # plt.plot(abs(np.fft.fft(B)))
     # plt.show()
     output_signal=np.convolve(B,origin_signal,'same')
-    return output_signal          
+    return output_signal      
+
+def phase_filter(origin_signal):
+    a=1
+    numtaps=50
+    B=scipy.signal.firwin(numtaps,[1/fs,50e3/fs],pass_zero=False)
+    # plt.plot(abs(np.fft.fft(B)))
+    # plt.show()
+    output_signal=np.convolve(B,origin_signal,'same')
+    return output_signal        
 
 if __name__=="__main__":
     test_filter('data.dat',AM_filter_before)

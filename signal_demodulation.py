@@ -1,7 +1,7 @@
 # 导入必要的库，例如 numpy
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import hilbert
+from scipy.signal import hilbert,butter,filtfilt
 import my_filter
 import json
 
@@ -27,8 +27,12 @@ def fm_demodulation(data):
     # 计算相位，然后对其进行解包
     instantaneous_phase = np.unwrap(np.angle(analytic_signal))
 
+    filtered_phase = my_filter.phase_filter(instantaneous_phase)  # 对相位进行低通滤波
+
+    # 对滤波后的相位进行差分，并考虑采样时间得到频率偏移
+    frequency_deviation = np.diff(filtered_phase) / (2.0*np.pi) * fs
     # 对相位进行差分，并考虑采样时间得到频率偏移
-    frequency_deviation = np.diff(instantaneous_phase) / (2.0*np.pi) * 8e6
+    # frequency_deviation = np.diff(instantaneous_phase) / (2.0*np.pi) * 8e6
         
     # # 计算最大频偏
     # max_frequency_deviation = np.max(np.abs(frequency_deviation[200:-199]))
@@ -94,7 +98,8 @@ def demodulate_signal(signal_type, preprocessed_signal):
         # 这可能需要通过傅里叶变换或其他频率分析技术来实现
         # 这里我们只是用一个占位符来代替真实的解调信号
         demodulated_signal = fm_demodulation(preprocessed_signal)
-        filted_signal = my_filter.FM_filter_after(demodulated_signal)
+        # filted_signal = my_filter.FM_filter_after(demodulated_signal)
+        filted_signal=demodulated_signal
         filted_signal[:139] = filted_signal[139]
         filted_signal[-140:] = filted_signal[-140]
         return filted_signal
