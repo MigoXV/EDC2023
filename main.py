@@ -28,6 +28,7 @@ def main():
     demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)
 
     np.savetxt('result.dat',demodulated_signal)
+    plt.plot(demodulated_signal)
     plt.savefig('result.png')
     
     # 参数估计
