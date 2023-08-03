@@ -12,7 +12,7 @@ def am_demodulation(modulated_wave):
 
     return envelope
 
-def fm_demodulation(preprocessed_signal):
+def fm_demodulation(data):
     fc=2e6
     fs=8e6
 
