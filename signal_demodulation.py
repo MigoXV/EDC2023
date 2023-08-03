@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import hilbert
+import my_filter
 
 def am_demodulation(modulated_wave):
     # 使用希尔伯特转换找到解析信号
@@ -45,9 +46,10 @@ def demodulate_signal(signal_type, preprocessed_signal):
     # 这些技术超出了这个例子的范围。
 
     if signal_type == 'AM':
-        # 示例: 对于 'AM' 信号，我们可能会进行解调
-        # 这可以通过将信号转换为其绝对值来简单地实现
+
         demodulated_signal = am_demodulation(preprocessed_signal)
+        demodulated_signal = my_filter.AM_filter()
+        
 
     elif signal_type == 'FM':
         # 对于 'FM' 信号，我们可能需要进行更复杂的解调过程
