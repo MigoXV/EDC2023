@@ -16,19 +16,21 @@ def fm_demodulation(preprocessed_signal):
     fc=2e6
     fs=8e6
 
-    # 计算相位
-    phase = np.angle(np.fft.ifft(preprocessed_signal))
+    t = np.arange(len(data)) / fs
 
-    # 处理相位跳变
-    phase_unwrapped = np.unwrap(phase)
+    # 使用希尔伯特变换得到解析信号
+    analytic_signal = hilbert(data)
 
-    # 计算相位差分
-    phase_diff = np.diff(phase_unwrapped)
+    # 计算相位，然后对其进行解包
+    instantaneous_phase = np.unwrap(np.angle(analytic_signal))
 
-    # 计算调制信号
-    modulation_signal = fs * phase_diff / (2.0*np.pi*fc)
+    # 对相位进行差分，并考虑采样时间得到频率偏移
+    frequency_deviation = np.diff(instantaneous_phase) / (2.0*np.pi) * 8e6
 
-    return modulation_signal
+    # FM信号的载波频率为2MHz，得到基带信号
+    baseband = frequency_deviation - 2e6
+
+    return baseband
 
 def cw_demodulation():
     pass
@@ -72,7 +74,8 @@ def demodulate_signal(signal_type, preprocessed_signal):
         # 这可能需要通过傅里叶变换或其他频率分析技术来实现
         # 这里我们只是用一个占位符来代替真实的解调信号
         demodulated_signal = fm_demodulation(preprocessed_signal)
-
+        filted_signal = my_filter.FM_filter_after(demodulated_signal)
+        return filted_signal
     # 以此类推，对于其他类型的信号，我们也可以添加相应的解调代码...
 
     return demodulated_signal
