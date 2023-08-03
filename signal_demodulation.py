@@ -32,6 +32,8 @@ def fm_demodulation(data):
     # FM信号的载波频率为2MHz，得到基带信号
     baseband = frequency_deviation - 2e6
     
+    baseband=baseband/np.max(baseband[2000:6000])
+    
     return baseband
 
 def cw_demodulation():
