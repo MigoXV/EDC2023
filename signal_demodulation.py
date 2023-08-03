@@ -30,14 +30,15 @@ def fm_demodulation(data):
     # 对相位进行差分，并考虑采样时间得到频率偏移
     frequency_deviation = np.diff(instantaneous_phase) / (2.0*np.pi) * 8e6
         
-    # 计算最大频偏
+    # # 计算最大频偏
     max_frequency_deviation = np.max(np.abs(frequency_deviation[200:-199]))
     params={}
     params["DFmax"]=max_frequency_deviation
     with open('parameter.json','w',encoding='UTF-8') as f:
         f.write(json.dumps(params))
-    plt.plot(frequency_deviation)
-    plt.savefig('max_frequency_deviation.png')
+    np.savetxt('frequency_deviation.dat',frequency_deviation)
+    # plt.plot(frequency_deviation)
+    # plt.savefig('max_frequency_deviation.png')
     frequency_deviation=np.append(frequency_deviation,frequency_deviation[-1])
     
     # FM信号的载波频率为2MHz，得到基带信号
