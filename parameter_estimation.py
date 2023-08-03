@@ -1,5 +1,7 @@
 # 导入必要的库，例如 numpy
 import numpy as np
+import json
+import matplotlib.pyplot as plt
 
 def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
     """
@@ -12,7 +14,10 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
     返回:
         params (dict): 一个包含参数名称和它们的估计值的字典。
     """
-    params = {}
+    
+    with open('parameter.json','r',encoding='utf-8') as f:
+        params=json.loads(f.read())
+    # params = {}
 
     # 根据信号的类型来估计参数。
     # 这可能涉及到复杂的信号处理和机器学习技术，
@@ -28,11 +33,12 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
         # 对于 'FM' 信号，我们可能需要估计调频系数 'mf' 和最大频偏 'delta_f_max'
         # 这可能需要通过傅里叶变换或其他频率分析技术来实现
         # 这里我们只是用一个占位符来代替真实的估计值
-        params['mf'] = 0  # 占位符
+        # params['mf'] = 0  # 占位符
         params['delta_f_max'] = 0  # 占位符
 
     # 以此类推，对于其他类型的信号，我们也可以添加相应的参数估计代码...
-
+    with open('parameter.json','w',encoding='UTF-8') as f:
+        f.write(json.dumps(params))
     return params
 
 if __name__ == "__main__":
