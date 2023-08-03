@@ -96,7 +96,7 @@ if __name__=="__main__":
     
     plt.plot(result)
     plt.show()
-    np.savetxt('result.dat',result)
+    plt.savefig('test-signal-demodulation.png')
  
 
 
