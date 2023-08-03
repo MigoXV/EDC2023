@@ -50,7 +50,7 @@ def identify_signal(preprocessed_signal, window_size=1000):
     
     # 检查信号是AM还是FM
     # if amplitude_envelope_diff > 0.001 and np.mean(np.abs(instantaneous_frequency)) < 2e6:
-    if amplitude_envelope_diff > 0.001
+    if amplitude_envelope_diff > 0.001:
         # print('信号是幅度调制（AM）。')
         signal_type='AM'
     elif amplitude_envelope_diff <= 0.001 and np.mean(np.abs(instantaneous_frequency)) >= 2e6:
