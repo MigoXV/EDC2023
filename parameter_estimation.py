@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # from scipy.fft import fft,fftfreq
 import math
 
-def T_counter(demodulated_signal):
+def T_counter(demodulated_signal,signal_type):
 
     # 首先，去除直流分量
     demodulated_signal = demodulated_signal - np.mean(demodulated_signal)
