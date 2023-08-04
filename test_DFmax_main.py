@@ -16,9 +16,10 @@ def main():
     params={}
     with open('parameter.json','w',encoding='UTF-8') as f:
         f.write(json.dumps(params))
-    
+    with open('DFmax-test-cache.dat','w',encoding='UTF-8') as f:
+        pass
     count=0
-    FDmax=[]
+    FDmax=[0]*25
     while True:
         # 采样信号
         import signal_sampling #不采样调试时注释本行
@@ -39,12 +40,12 @@ def main():
         # else:
             # 解调信号
         # demodulated_signal = signal_demodulation.demodulate_signal('FMor2FSK',preprocessed_signal)
-        demodulated_signal = signal_demodulation.fm_demodulation(preprocessed_signal)
+        demodulated_signal = signal_demodulation.demodulate_signal('FMor2FSK',preprocessed_signal)
         np.savetxt('result.dat',demodulated_signal)
         
         with open('parameter.json','r') as f:
             myjson=json.loads(f.read())
-        FDmax[count]=json['FDmax']
+        FDmax[count]=myjson['DFmax']
         # 参数估计
         # parameters = parameter_estimation.estimate_parameters('FMor2FSK',demodulated_signal,preprocessed_signal)
 
@@ -55,17 +56,20 @@ def main():
         # user_interface.output_signal()
 
         # 采样信号、解调信号绘图
-        plt.figure()
-        plt.plot(signal_sample)
-        plt.savefig('data.png')
-        plt.figure()
+        # plt.figure()
+        # plt.plot(signal_sample)
+        # plt.savefig('data.png')
+        # plt.figure()
         plt.plot(demodulated_signal)
-        plt.savefig('result.png')
+        plt.savefig('./DFmax-cache/result-'+str(count+1)+'k.png')
     
+        
+
+        with open('DFmax-test-cache.dat','a',encoding='UTF-8') as f:
+            f.write(str(FDmax[count])+'\n')
+        print('频偏',count+1,'k输入完成，按任意键继续')
+        input()
         count+=1
-        input('频偏',count,'k输入完成，按任意键继续')
-        with open('parameter.json','a',encoding='UTF-8') as f:
-            f.write(json.dumps(FDmax[count]))
     
 if __name__ == "__main__":
     main()
