@@ -23,8 +23,60 @@
 import numpy as np
 from scipy.signal import hilbert, fftconvolve
 from scipy.fftpack import fft, fftfreq
+import matplotlib.pyplot as plt
+
+
+def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.999995):
+    """
+    该函数用于识别信号是否为单纯的正弦载波信号。
+    
+    参数:
+    preprocessed_signal (numpy array): 预处理后的信号
+    fs (float): 采样频率，默认为8e6 (8MHz)
+    carrier_freq (float): 载波频率，默认为2e6 (2MHz)
+    threshold (float): 判断阈值，默认为0.05，若频谱中除载波频率外其他频率分量的能量占总能量比例超过该值，则判断为调制信号
+
+    返回:
+    bool: 如果信号为单纯的正弦载波信号，则返回True；如果信号被调制，则返回False
+    """
+    # 计算FFT以转换到频域
+    signal_fft = fft(preprocessed_signal)
+    
+    # 计算频率
+    freq = fftfreq(len(signal_fft), 1/fs)
+    
+    # 取得正频率部分
+    signal_fft = signal_fft[freq >= 0]
+    freq = freq[freq >= 0]
+    
+    # 找到载波频率在频率数组中的索引
+    idx = np.abs(freq - carrier_freq).argmin()
+    
+    # 计算总能量
+    total_energy = np.sum(np.abs(signal_fft)**2)
+    
+    # 计算载波能量
+    carrier_energy = np.abs(signal_fft[idx])**2
+    
+    # 计算除载波外的能量
+    other_energy = total_energy - carrier_energy
+    
+    test_point=other_energy / total_energy
+    print("test_point=",test_point)
+    
+    # 如果除载波外的能量占总能量的比例超过阈值，则认为信号被调制了
+    if other_energy / total_energy < threshold:
+        return False
+    else:
+        return True
 
 def identify_signal(preprocessed_signal, window_size=1000):
+
+    # 首先检查信号是经过调制的信号还是单纯的载波信号
+    if is_cw(preprocessed_signal):
+        return 'CW'
+    
+    #如果经过了调制运行下面的代码:
 
     # 计算解析信号（希尔伯特变换）
     analytic_signal = hilbert(preprocessed_signal)
