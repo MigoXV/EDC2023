@@ -70,6 +70,46 @@ import matplotlib.pyplot as plt
 #     else:
 #         return True
 
+# def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.05):
+#     """
+#     判断输入的信号是否为单一载波信号。
+#     参数：
+#         preprocessed_signal: ndarray，需要判断的信号。
+#         fs: float，采样频率，单位Hz。
+#         carrier_freq: float，载波频率，单位Hz。
+#         threshold: float，频率差的阈值，用于判断是否存在调制。
+#     返回值：
+#         bool，如果输入的信号是单一载波信号，返回True，否则返回False。
+#     """
+#     from scipy import signal
+#     # 载波周期
+#     carrier_period = 1.0 / carrier_freq
+
+#     # 计算每一段的长度
+#     segment_length = int(fs * carrier_period)
+
+#     for i in range(0, len(preprocessed_signal), segment_length):
+#         segment = preprocessed_signal[i:i+segment_length]
+
+#         # 计算每一段的周期图
+#         periodogram = signal.periodogram(segment, fs)
+
+#         # 检查是否有其它频率分量
+#         freqs, pwr = periodogram
+#         max_pwr_idx = np.argmax(pwr)
+#         max_freq = freqs[max_pwr_idx]
+        
+#         test_point=max_freq - carrier_freq
+#         print("test_point=",test_point)
+        
+#         if abs(max_freq - carrier_freq) > threshold:
+#             # 如果最大功率的频率与载波频率的差大于阈值，那么认为存在调制
+#             return False
+
+#     return True
+
+
+
 def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.05):
     """
     判断输入的信号是否为单一载波信号。
@@ -77,34 +117,27 @@ def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.05):
         preprocessed_signal: ndarray，需要判断的信号。
         fs: float，采样频率，单位Hz。
         carrier_freq: float，载波频率，单位Hz。
-        threshold: float，频率差的阈值，用于判断是否存在调制。
+        threshold: float，用于判断是否存在调制的阈值。
     返回值：
         bool，如果输入的信号是单一载波信号，返回True，否则返回False。
     """
-    from scipy import signal
-    # 载波周期
-    carrier_period = 1.0 / carrier_freq
+    import numpy as np
+    from scipy.signal import hilbert
+    
+    # 计算希尔伯特变换
+    analytic_signal = hilbert(preprocessed_signal)
+    
+    # 计算相位
+    phase = np.unwrap(np.angle(analytic_signal))
+    
+    # 计算相位差
+    phase_diff = np.diff(phase)
+    
+    # 对于一个单一载波信号，相位差应该是恒定的，我们可以通过检查相位差的标准差来看是否存在调制
+    phase_diff_std = np.std(phase_diff)
 
-    # 计算每一段的长度
-    segment_length = int(fs * carrier_period)
-
-    for i in range(0, len(preprocessed_signal), segment_length):
-        segment = preprocessed_signal[i:i+segment_length]
-
-        # 计算每一段的周期图
-        periodogram = signal.periodogram(segment, fs)
-
-        # 检查是否有其它频率分量
-        freqs, pwr = periodogram
-        max_pwr_idx = np.argmax(pwr)
-        max_freq = freqs[max_pwr_idx]
-        
-        test_point=max_freq - carrier_freq
-        print("test_point=",test_point)
-        
-        if abs(max_freq - carrier_freq) > threshold:
-            # 如果最大功率的频率与载波频率的差大于阈值，那么认为存在调制
-            return False
+    if phase_diff_std > threshold:
+        return False
 
     return True
 
