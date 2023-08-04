@@ -47,11 +47,11 @@ def main():
     user_interface.output_signal()
 
     # 采样信号、解调信号绘图
-    plt.figure()
+    # plt.figure()
     plt.plot(signal_sample)
     plt.savefig('data.png')
-    plt.figure()
-    plt.plot(demodulated_signal)
+    plt.clf()
+    plt.plot(np.loadtxt('result.dat'))
     plt.savefig('result.png')
     
     
