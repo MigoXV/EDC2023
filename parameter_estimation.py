@@ -21,7 +21,7 @@ def T_counter(demodulated_signal,signal_type):
 
     # 一个周期应该包含两个零点交叉（一个从正到负，一个从负到正）
     num_periods = len(valid_crossings_diff) / 2
-
+    num_periods = math.ceil(num_periods)
     # if signal_type=='AM':
     #     num_periods=math.ceil(num_periods)
     # elif signal_type=='FM':
@@ -59,6 +59,8 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
             signal_type_ensure='2ASK'
         if signal_type == 'FM':
             signal_type_ensure='2FSK'
+    else:
+        signal_type_ensure=signal_type
 
     params['type']=signal_type_ensure
     

@@ -180,7 +180,7 @@ def identify_signal(preprocessed_signal, window_size=1000):
         signal_type='AM'
     elif amplitude_envelope_diff <= 0.001 and np.mean(np.abs(instantaneous_frequency)) >= 2e6:
         # print('信号是频率调制（FM）。')
-        signal_type='FM'
+        signal_type='FMor2FSK'
     elif np.mean(np.abs(instantaneous_frequency)) <= 1.8e6:
         signal_type='2ASK'
     else:
