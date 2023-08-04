@@ -26,7 +26,7 @@ def main():
     # 识别信号类型
     signal_type = signal_identification.identify_signal(preprocessed_signal)
 
-    print("信号类型为：",signal_type)
+    # print("信号类型为：",signal_type)
 
 
     # 解调信号
@@ -38,7 +38,7 @@ def main():
     
     # 参数估计
     parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
-    print('最大频偏:20K')
+
     # 显示结果
     user_interface.display_signal_info(signal_type, parameters)
 
