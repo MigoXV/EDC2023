@@ -110,7 +110,7 @@ import matplotlib.pyplot as plt
 
 
 
-def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.05):
+def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.04):
     """
     判断输入的信号是否为单一载波信号。
     参数：
@@ -136,6 +136,8 @@ def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.05):
     # 对于一个单一载波信号，相位差应该是恒定的，我们可以通过检查相位差的标准差来看是否存在调制
     phase_diff_std = np.std(phase_diff)
 
+    print("phase_diff_std:",phase_diff_std)
+    
     if phase_diff_std > threshold:
         return False
 
@@ -173,12 +175,14 @@ def identify_signal(preprocessed_signal, window_size=1000):
     
     # 检查信号是AM还是FM
     # if amplitude_envelope_diff > 0.001 and np.mean(np.abs(instantaneous_frequency)) < 2e6:
-    if amplitude_envelope_diff > 0.001:
+    if amplitude_envelope_diff > 0.001 and np.mean(np.abs(instantaneous_frequency)) >= 1.8e6:
         # print('信号是幅度调制（AM）。')
         signal_type='AM'
     elif amplitude_envelope_diff <= 0.001 and np.mean(np.abs(instantaneous_frequency)) >= 2e6:
         # print('信号是频率调制（FM）。')
         signal_type='FM'
+    elif np.mean(np.abs(instantaneous_frequency)) <= 1.8e6:
+        signal_type='2ASK'
     else:
         # print('信号不能明确地对应AM或FM调制。')
         signal_type='unknown'

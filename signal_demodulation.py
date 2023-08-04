@@ -89,7 +89,7 @@ def demodulate_signal(signal_type, preprocessed_signal):
     # 这可能涉及到复杂的信号处理和机器学习技术，
     # 这些技术超出了这个例子的范围。
 
-    if signal_type == 'AM':
+    if signal_type == 'AM' or signal_type == '2ASK':
 
         demodulated_signal = am_demodulation(preprocessed_signal)
         filted_signal = my_filter.AM_filter_after(demodulated_signal)
