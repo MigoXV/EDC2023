@@ -188,8 +188,39 @@ def identify_signal(preprocessed_signal, window_size=1000):
         signal_type='unknown'
     return signal_type
 
+def fm_or_2fsk_demodulated(demodulated_signal):
+    # 对信号进行一阶差分
+    diff_signal = np.diff(demodulated_signal)
+
+    # 计算一阶差分的绝对值
+    abs_diff_signal = np.abs(diff_signal)
+
+    
+    # plt.plot(abs_diff_signal)
+    # plt.title('abs_diff_signal')
+    # plt.ylim([0,0.015])
+    # plt.show()
+    # 设置一个阈值，大于这个阈值则认为是方波，否则是正弦波
+    # 这个阈值可以通过对已知的正弦波和方波信号进行实验得到，这里假设是0.5
+    threshold = 0.010
+
+    # # 计算超过阈值的元素的比例
+    # ratio = np.sum(abs_diff_signal > threshold) / len(abs_diff_signal)
+    # print('ratio:',ratio)
+
+    # 如果超过阈值的元素比例超过一半，则认为是方波
+    if np.max(abs_diff_signal)>threshold:
+        return '2FSK'
+    else:
+        return 'FM'
+    
+
+
 if __name__=="__main__":
     data=np.loadtxt('data-am.dat')
     print(identify_signal(data))
     data=np.loadtxt('data-fm.dat')
     print(identify_signal(data))
+    
+    
+
