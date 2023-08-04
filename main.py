@@ -17,7 +17,7 @@ def main():
         f.write(json.dumps(params))
     
     # 采样信号
-    # import signal_sampling #不采样调试时注释本行
+    import signal_sampling #不采样调试时注释本行
     signal_sample = np.loadtxt("data.dat")
 
     # 预处理信号
