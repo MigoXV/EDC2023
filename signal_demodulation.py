@@ -101,7 +101,7 @@ def demodulate_signal(signal_type, preprocessed_signal):
         return filted_signal
     # 以此类推，对于其他类型的信号，我们也可以添加相应的解调代码...
     elif signal_type=='2PSK':
-        demodulated_signal = fm_demodulation(preprocessed_signal)
+        demodulated_signal = psk_demodulation(preprocessed_signal)
         # filted_signal = my_filter.FM_filter_after(demodulated_signal)
         filted_signal=demodulated_signal
         filted_signal[:139] = filted_signal[139]
