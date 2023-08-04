@@ -14,6 +14,8 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+import output_con_phase
+
 
 if sys.platform.startswith("win"):
     dwf = cdll.dwf
@@ -58,9 +60,15 @@ channel = c_int(0)
 #     data = file.readlines()
 data=np.loadtxt('result.dat')
 
+con_phase_data=output_con_phase.get_max_subarray(data)
+cSamples=len(con_phase_data)
+
+plt.plot(con_phase_data)
+plt.savefig('con_phase_data.png')
+
 # 将数据转换为double类型，并保存到ctypes数组中
 for i in range(cSamples):
-    rgdSamples[i] = c_double(float(data[i]))
+    rgdSamples[i] = c_double(float(con_phase_data[i]))
 
 # dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
 # dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine)
