@@ -26,49 +26,87 @@ from scipy.fftpack import fft, fftfreq
 import matplotlib.pyplot as plt
 
 
-def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.999995):
-    """
-    该函数用于识别信号是否为单纯的正弦载波信号。
+# def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.999995):
+#     """
+#     该函数用于识别信号是否为单纯的正弦载波信号。
     
-    参数:
-    preprocessed_signal (numpy array): 预处理后的信号
-    fs (float): 采样频率，默认为8e6 (8MHz)
-    carrier_freq (float): 载波频率，默认为2e6 (2MHz)
-    threshold (float): 判断阈值，默认为0.05，若频谱中除载波频率外其他频率分量的能量占总能量比例超过该值，则判断为调制信号
+#     参数:
+#     preprocessed_signal (numpy array): 预处理后的信号
+#     fs (float): 采样频率，默认为8e6 (8MHz)
+#     carrier_freq (float): 载波频率，默认为2e6 (2MHz)
+#     threshold (float): 判断阈值，默认为0.05，若频谱中除载波频率外其他频率分量的能量占总能量比例超过该值，则判断为调制信号
 
-    返回:
-    bool: 如果信号为单纯的正弦载波信号，则返回True；如果信号被调制，则返回False
+#     返回:
+#     bool: 如果信号为单纯的正弦载波信号，则返回True；如果信号被调制，则返回False
+#     """
+#     # 计算FFT以转换到频域
+#     signal_fft = fft(preprocessed_signal)
+    
+#     # 计算频率
+#     freq = fftfreq(len(signal_fft), 1/fs)
+    
+#     # 取得正频率部分
+#     signal_fft = signal_fft[freq >= 0]
+#     freq = freq[freq >= 0]
+    
+#     # 找到载波频率在频率数组中的索引
+#     idx = np.abs(freq - carrier_freq).argmin()
+    
+#     # 计算总能量
+#     total_energy = np.sum(np.abs(signal_fft)**2)
+    
+#     # 计算载波能量
+#     carrier_energy = np.abs(signal_fft[idx])**2
+    
+#     # 计算除载波外的能量
+#     other_energy = total_energy - carrier_energy
+    
+#     test_point=other_energy / total_energy
+#     print("test_point=",test_point)
+    
+#     # 如果除载波外的能量占总能量的比例超过阈值，则认为信号被调制了
+#     if other_energy / total_energy < threshold:
+#         return False
+#     else:
+#         return True
+
+def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.05):
     """
-    # 计算FFT以转换到频域
-    signal_fft = fft(preprocessed_signal)
-    
-    # 计算频率
-    freq = fftfreq(len(signal_fft), 1/fs)
-    
-    # 取得正频率部分
-    signal_fft = signal_fft[freq >= 0]
-    freq = freq[freq >= 0]
-    
-    # 找到载波频率在频率数组中的索引
-    idx = np.abs(freq - carrier_freq).argmin()
-    
-    # 计算总能量
-    total_energy = np.sum(np.abs(signal_fft)**2)
-    
-    # 计算载波能量
-    carrier_energy = np.abs(signal_fft[idx])**2
-    
-    # 计算除载波外的能量
-    other_energy = total_energy - carrier_energy
-    
-    test_point=other_energy / total_energy
-    print("test_point=",test_point)
-    
-    # 如果除载波外的能量占总能量的比例超过阈值，则认为信号被调制了
-    if other_energy / total_energy < threshold:
-        return False
-    else:
-        return True
+    判断输入的信号是否为单一载波信号。
+    参数：
+        preprocessed_signal: ndarray，需要判断的信号。
+        fs: float，采样频率，单位Hz。
+        carrier_freq: float，载波频率，单位Hz。
+        threshold: float，频率差的阈值，用于判断是否存在调制。
+    返回值：
+        bool，如果输入的信号是单一载波信号，返回True，否则返回False。
+    """
+    from scipy import signal
+    # 载波周期
+    carrier_period = 1.0 / carrier_freq
+
+    # 计算每一段的长度
+    segment_length = int(fs * carrier_period)
+
+    for i in range(0, len(preprocessed_signal), segment_length):
+        segment = preprocessed_signal[i:i+segment_length]
+
+        # 计算每一段的周期图
+        periodogram = signal.periodogram(segment, fs)
+
+        # 检查是否有其它频率分量
+        freqs, pwr = periodogram
+        max_pwr_idx = np.argmax(pwr)
+        max_freq = freqs[max_pwr_idx]
+        
+        test_point=max_freq - carrier_freq
+        print("test_point=",test_point)
+        
+        if abs(max_freq - carrier_freq) > threshold:
+            # 如果最大功率的频率与载波频率的差大于阈值，那么认为存在调制
+            return False
+
+    return True
 
 def identify_signal(preprocessed_signal, window_size=1000):
 
