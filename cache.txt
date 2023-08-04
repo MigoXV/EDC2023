@@ -1,0 +1,66 @@
+2FSK:
+
+5
+phase_diff_std: 0.044154354016166186
+amplitude_envelope_diff: 3.1639834267971735e-05
+np.mean(np.abs(instantaneous_frequency)): 2080184.9974777072
+信号类型为： FM
+Signal type: FM
+DFmax: 14.83636736896051
+T_num: 5
+type: FM
+delta_f_max: 0
+
+
+4
+phase_diff_std: 0.04226334857177552
+amplitude_envelope_diff: 4.2447769945801575e-05
+np.mean(np.abs(instantaneous_frequency)): 2079843.452711642
+信号类型为： FM
+Signal type: FM
+DFmax: 15.484901765545146
+T_num: 4
+type: FM
+delta_f_max: 0
+
+
+3
+phase_diff_std: 0.04279746798873871
+amplitude_envelope_diff: 3.726903476039384e-05
+np.mean(np.abs(instantaneous_frequency)): 2079104.9538712187
+信号类型为： FM
+Signal type: FM
+DFmax: 17.000558301880005
+T_num: 3
+type: FM
+
+FM:
+phase_diff_std: 0.04202367516238701
+amplitude_envelope_diff: 7.479331278412002e-05
+np.mean(np.abs(instantaneous_frequency)): 2079169.3164702456
+信号类型为： FM
+Signal type: FM
+DFmax: 15.822498942457628
+T_num: 3
+type: FM
+delta_f_max: 0
+
+phase_diff_std: 0.04242270010815353
+amplitude_envelope_diff: 5.292673214248423e-05
+np.mean(np.abs(instantaneous_frequency)): 2079315.1813981535
+信号类型为： FM
+Signal type: FM
+DFmax: 15.165764325191503
+T_num: 4
+type: FM
+delta_f_max: 0
+
+phase_diff_std: 0.041579775414717954
+amplitude_envelope_diff: 3.689091773570504e-05
+np.mean(np.abs(instantaneous_frequency)): 2079604.9449518202
+信号类型为： FM
+Signal type: FM
+DFmax: 15.439715812035843
+T_num: 4
+type: FM
+delta_f_max: 0

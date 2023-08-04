@@ -89,7 +89,7 @@ def demodulate_signal(signal_type, preprocessed_signal):
         return filted_signal
         
 
-    elif signal_type == 'FM':
+    elif signal_type == 'FMor2FSK':
         # 对于 'FM' 信号，我们可能需要进行更复杂的解调过程
         # 这可能需要通过傅里叶变换或其他频率分析技术来实现
         # 这里我们只是用一个占位符来代替真实的解调信号
