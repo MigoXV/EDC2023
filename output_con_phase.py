@@ -15,6 +15,6 @@ def get_max_subarray(arr):
     max_2_idx = np.argmax(sub_arr) + max_1_idx + 1000
 
     # 截取两索引之间的数据
-    result_arr = arr[max_1_idx:max_2_idx]
+    result_arr = arr[max_1_idx:max_2_idx-15]
 
     return result_arr
