@@ -20,12 +20,9 @@ def main():
     import signal_sampling #不采样调试时注释本行
     signal_sample = np.loadtxt("data.dat")
 
-    plt.plot(signal_sample)
-    plt.savefig('data.png')
-    
     # 预处理信号
-    preprocessed_signal = signal_preprocessing.preprocess_signal(signal_sample)
-
+    # preprocessed_signal = signal_preprocessing.preprocess_signal(signal_sample)
+    preprocessed_signal=signal_sample
     # 识别信号类型
     signal_type = signal_identification.identify_signal(preprocessed_signal)
 
@@ -36,8 +33,8 @@ def main():
     demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)
 
     np.savetxt('result.dat',demodulated_signal)
-    plt.plot(demodulated_signal)
-    plt.savefig('result.png')
+    
+
     
     # 参数估计
     parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
@@ -48,6 +45,11 @@ def main():
     # 输出解调信号供示波器观测
     # user_interface.output_signal()
 
+    # 采样信号、解调信号绘图
+    plt.plot(signal_sample)
+    plt.savefig('data.png')
+    plt.plot(demodulated_signal)
+    plt.savefig('result.png')
     
     
 if __name__ == "__main__":
