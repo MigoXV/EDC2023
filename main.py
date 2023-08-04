@@ -20,6 +20,9 @@ def main():
     import signal_sampling #不采样调试时注释本行
     signal_sample = np.loadtxt("data.dat")
 
+    plt.plot(signal_sample)
+    plt.savefig('data.png')
+    
     # 预处理信号
     preprocessed_signal = signal_preprocessing.preprocess_signal(signal_sample)
 
