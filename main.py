@@ -42,7 +42,9 @@ def main():
 
         # 显示结果
         user_interface.display_signal_info(signal_type, parameters)
-
+    result=np.loadtxt('result.dat')
+    result=result-result.mean()
+    np.savetxt('result.dat',result)
     # 输出解调信号供示波器观测
     user_interface.output_signal()
 
@@ -51,7 +53,7 @@ def main():
     plt.plot(signal_sample)
     plt.savefig('data.png')
     plt.clf()
-    plt.plot(np.loadtxt('result.dat'))
+    plt.plot(result)
     plt.savefig('result.png')
     
     
