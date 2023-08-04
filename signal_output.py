@@ -72,7 +72,8 @@ for i in range(cSamples):
 # dwf.FDwfAnalogOutNodeOffsetSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0))
 
 if params['type']=='AM' or params['type']=='FM':
-    output_wave_form=funcCustom
+    output_wave_form=funcSine
+    output_wave_amplitude=params['ma']*2
 else:
     output_wave_form=funcTriangle
 
@@ -83,7 +84,7 @@ dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True)
 dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, output_wave_form) 
 # dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples, c_int(cSamples))
 dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(output_wave_frequency)) 
-dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(2.0))
+dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(output_wave_amplitude))
 dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
 
 dwf.FDwfDeviceCloseAll()
