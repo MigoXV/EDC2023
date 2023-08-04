@@ -2,6 +2,28 @@
 import numpy as np
 import json
 import matplotlib.pyplot as plt
+from scipy.fft import fft,fftfreq
+
+def T_counter(demodulated_signal):
+
+    # 首先，去除直流分量
+    demodulated_signal = demodulated_signal - np.mean(demodulated_signal)
+
+    # 然后找到零点交叉
+    crossings = np.where(np.diff(np.sign(demodulated_signal)))[0]
+
+    # 由于噪声可能会导致错误的零点交叉，需要进一步处理
+    # 例如，可以设置一个最小周期，用来过滤掉过小的周期（可能由噪声导致）
+    min_period = 100  # 需要根据你的信号的具体频率和采样率来设定
+    crossings_diff = np.diff(crossings)
+    valid_crossings_diff = crossings_diff[crossings_diff > min_period]
+
+    # 一个周期应该包含两个零点交叉（一个从正到负，一个从负到正）
+    num_periods = len(valid_crossings_diff) / 2
+
+    return num_periods
+    # print("The number of sine wave periods in the signal: ", num_periods)
+
 
 def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
     """
@@ -36,6 +58,9 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
         # params['mf'] = 0  # 占位符
         params['delta_f_max'] = 0  # 占位符
 
+    # 找到周期数
+    params['T_num']=T_counter(demodulated_signal)
+    
     # 以此类推，对于其他类型的信号，我们也可以添加相应的参数估计代码...
     with open('parameter.json','w',encoding='UTF-8') as f:
         f.write(json.dumps(params))
@@ -43,7 +68,8 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
 
 if __name__ == "__main__":
     result=np.loadtxt('result.dat')
-    estimate_parameters('AM',result)
+    # estimate_parameters('AM',result)
+    T_counter(result)
     
 # 75 {'ma': 0.8756927051634225}
 # 100 {'ma': 0.9681466583590149}
