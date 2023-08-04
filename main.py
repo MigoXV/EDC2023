@@ -24,20 +24,20 @@ def main():
     # preprocessed_signal = signal_preprocessing.preprocess_signal(signal_sample)
     preprocessed_signal=signal_sample
     # 识别信号类型
-    signal_type = signal_identification.identify_signal(preprocessed_signal)
+    signal_type,is_cw = signal_identification.identify_signal(preprocessed_signal)
 
     # print("信号类型为：",signal_type)
 
 
     # 解调信号
-    demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)
+    demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal,is_cw)
 
     np.savetxt('result.dat',demodulated_signal)
     
 
     
     # 参数估计
-    parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
+    parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal,is_cw)
 
     # 显示结果
     user_interface.display_signal_info(signal_type, parameters)

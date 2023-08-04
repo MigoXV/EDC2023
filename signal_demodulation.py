@@ -71,7 +71,7 @@ def fsk_demodulation():
 def psk_demodulation():
     pass
 
-def demodulate_signal(signal_type, preprocessed_signal):
+def demodulate_signal(signal_type, preprocessed_signal,is_cw):
     """
     根据预处理过的信号和它的类型解调信号。
 

@@ -30,7 +30,7 @@ def T_counter(demodulated_signal,signal_type):
     # print("The number of sine wave periods in the signal: ", num_periods)
 
 
-def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
+def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal,is_cw):
     """
     根据预处理过的信号和它的类型估计信号的参数。
 

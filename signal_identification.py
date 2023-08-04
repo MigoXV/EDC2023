@@ -22,9 +22,46 @@
 
 import numpy as np
 from scipy.signal import hilbert, fftconvolve
-from scipy.fftpack import fft, fftfreq
+from scipy.fftpack import fft, fftfreq,correlate
+
+def is_cw(preprocessed_signal, fs=8e6, threshold=0.5):
+    """
+    函数的目的是识别信号是否为CW（AM或FM）或者数字调制（2ASK,2PSK,2FSK）
+    参数：
+    preprocessed_signal (numpy.ndarray): 输入信号
+    fs (float): 采样频率
+    threshold (float): 用来区分CW和数字信号的阈值
+
+    返回值：
+    bool: 如果信号为CW，返回True；如果为数字调制，返回False
+    """
+
+    # 使用快速傅里叶变换（FFT）得到频谱
+    spectrum = np.abs(fft(preprocessed_signal))
+
+    # 找到主导频率成分
+    freq = fftfreq(len(preprocessed_signal), 1 / fs)
+    dominant_freq = freq[np.argmax(spectrum)]
+
+    # 归一化信号
+    normalized_signal = preprocessed_signal / np.max(np.abs(preprocessed_signal))
+
+    # 计算信号的自相关函数
+    autocorr = correlate(normalized_signal, normalized_signal)
+
+    # 如果信号是CW（AM或FM），它会在主频上有一个高峰，
+    # 并且其自相关函数将是一个平滑的函数。
+    # 如果信号是数字调制（2ASK, 2PSK, 2FSK），它会有突然的变化，
+    # 这就导致在自相关函数中有高峰。
+    # 因此，我们可以通过检查自相关函数的最大值与平均值的比例来确定信号类型
+    if np.max(autocorr) / np.mean(autocorr) > threshold:
+        return True  # 信号为CW
+    else:
+        return False  # 信号为数字调制
 
 def identify_signal(preprocessed_signal, window_size=1000):
+
+    flag_cw=is_cw(preprocessed_signal)
 
     # 计算解析信号（希尔伯特变换）
     analytic_signal = hilbert(preprocessed_signal)
@@ -59,7 +96,9 @@ def identify_signal(preprocessed_signal, window_size=1000):
     else:
         # print('信号不能明确地对应AM或FM调制。')
         signal_type='unknown'
-    return signal_type
+    return signal_type,flag_cw
+
+
 
 if __name__=="__main__":
     data=np.loadtxt('data-am.dat')
