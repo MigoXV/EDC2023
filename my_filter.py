@@ -52,7 +52,7 @@ def AM_filter_after(origin_signal):
 def FM_filter_after(origin_signal):
     a=1
     numtaps=91
-    B=scipy.signal.firwin(numtaps,[4.8e3/fs,5.2e3/fs],pass_zero=False)
+    B=scipy.signal.firwin(numtaps,[0.95e3/fs,5.05e3/fs],pass_zero=False)
     # plt.plot(abs(np.fft.fft(B)))
     # plt.show()
     output_signal=np.convolve(B,origin_signal,'same')
@@ -61,8 +61,8 @@ def FM_filter_after(origin_signal):
 # 1.97M-2.03M
 def pre_filter(origin_signal):
     a=1
-    numtaps=17
-    B=scipy.signal.firwin(numtaps,[1.95e6/fs,2.05e6/fs],pass_zero=False)
+    numtaps=3
+    B=scipy.signal.firwin(numtaps,[1.9e6/fs,2.1e6/fs],pass_zero=False)
     # plt.plot(abs(np.fft.fft(B)))
     # plt.show()
     output_signal=np.convolve(B,origin_signal,'same')

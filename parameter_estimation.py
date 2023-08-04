@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 # from scipy.fft import fft,fftfreq
 import math
 import signal_identification
+import my_filter
 
 def T_counter(demodulated_signal,signal_type):
 
@@ -16,7 +17,7 @@ def T_counter(demodulated_signal,signal_type):
 
     # 由于噪声可能会导致错误的零点交叉，需要进一步处理
     # 例如，可以设置一个最小周期，用来过滤掉过小的周期（可能由噪声导致）
-    min_period = 100  # 需要根据你的信号的具体频率和采样率来设定
+    min_period = 600  # 需要根据你的信号的具体频率和采样率来设定
     crossings_diff = np.diff(crossings)
     valid_crossings_diff = crossings_diff[crossings_diff > min_period]
 
@@ -86,12 +87,28 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
         # 这可能需要通过傅里叶变换或其他频率分析技术来实现
         # 这里我们只是用一个占位符来代替真实的估计值
         # params['mf'] = 0  # 占位符
-        params['delta_f_max'] = params['DFmax']  # 占位符
+        a0= 2062.853052728227
+        a1= -3047.2164740322733
+        a2= 2657.804532001301
+        a3= -891.2749824438622
+        a4= 174.87221748314695
+        a5= -21.364206741121418
+        a6= 1.6694191837467751
+        a7= -0.08336759687893586
+        a8= 0.002571607130951519
+        a9= -4.461112018617971e-05
+        a10= 3.327529122326497e-07       
+        def tenth_degree_function(x, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10):
+            return a0 + a1*x + a2*x**2 + a3*x**3 + a4*x**4 + a5*x**5 + a6*x**6 + a7*x**7 + a8*x**8 + a9*x**9 + a10*x**10    
+        
+        delta_f_max=tenth_degree_function(params['DFmax'],a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+        params['delta_f_max'] = delta_f_max  # 占位符
 
-
-    
-
-    
+        filted_signal = my_filter.FM_filter_after(demodulated_signal)
+        filted_signal[:89] = filted_signal[89]
+        filted_signal[-90:] = filted_signal[-90]
+        np.savetxt('result.dat',filted_signal)
+   
     # 以此类推，对于其他类型的信号，我们也可以添加相应的参数估计代码...
     with open('parameter.json','w',encoding='UTF-8') as f:
         f.write(json.dumps(params))
