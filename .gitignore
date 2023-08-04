@@ -1,1 +1,12 @@
 venv-EDC23
+__pycache__
+data.dat
+result.dat
+data-am.dat
+data-fm.dat
+*.png
+frequency_deviation.dat
+
+parameter.json
+*.dat
+parameter.json
