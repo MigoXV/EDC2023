@@ -43,7 +43,7 @@ def main():
     user_interface.display_signal_info(signal_type, parameters)
 
     # 输出解调信号供示波器观测
-    # user_interface.output_signal()
+    user_interface.output_signal()
 
     # 采样信号、解调信号绘图
     plt.figure()

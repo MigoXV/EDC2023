@@ -93,6 +93,8 @@ def demodulate_signal(signal_type, preprocessed_signal):
 
         demodulated_signal = am_demodulation(preprocessed_signal)
         filted_signal = my_filter.AM_filter_after(demodulated_signal)
+        filted_signal[:139] = filted_signal[139]
+        filted_signal[-140:] = filted_signal[-140]
         return filted_signal
         
 

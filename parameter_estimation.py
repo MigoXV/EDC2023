@@ -23,9 +23,9 @@ def T_counter(demodulated_signal,signal_type):
     num_periods = len(valid_crossings_diff) / 2
 
     if signal_type=='AM':
-        num_periods=int(num_periods)
+        num_periods=math.ceil(num_periods)
     elif signal_type=='FM':
-        num_periods==math.ceil(num_periods)
+        num_periods=math.ceil(num_periods)
     return num_periods
     # print("The number of sine wave periods in the signal: ", num_periods)
 
