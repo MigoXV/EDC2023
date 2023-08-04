@@ -10,7 +10,7 @@ import user_interface
 import numpy as np
 import matplotlib.pyplot as plt
 import json
-
+import os
 
 def main():
     params={}
@@ -22,7 +22,10 @@ def main():
     FDmax=[0]*25
     while True:
         # 采样信号
-        import signal_sampling #不采样调试时注释本行
+        def getdata():
+            os.system('python3 /home/jetson/Desktop/EDC2023-bak/EDC2023/signal_sampling.py') #不采样调试时注释本行
+            
+        getdata()
         signal_sample = np.loadtxt("data.dat")
 
         # 预处理信号
