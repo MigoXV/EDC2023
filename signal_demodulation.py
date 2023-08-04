@@ -59,16 +59,7 @@ def fm_demodulation(data):
     
     return baseband
 
-def cw_demodulation():
-    pass
-
-def ask_demodulation():
-    pass
-
-def fsk_demodulation():
-    pass
-
-def psk_demodulation():
+def psk_demodulation(modulated_wave):
     pass
 
 def demodulate_signal(signal_type, preprocessed_signal):
@@ -109,7 +100,13 @@ def demodulate_signal(signal_type, preprocessed_signal):
         filted_signal[-140:] = filted_signal[-140]
         return filted_signal
     # 以此类推，对于其他类型的信号，我们也可以添加相应的解调代码...
-
+    elif signal_type=='2PSK':
+        demodulated_signal = fm_demodulation(preprocessed_signal)
+        # filted_signal = my_filter.FM_filter_after(demodulated_signal)
+        filted_signal=demodulated_signal
+        filted_signal[:139] = filted_signal[139]
+        filted_signal[-140:] = filted_signal[-140]
+        return filted_signal        
     return demodulated_signal
 
 if __name__=="__main__":

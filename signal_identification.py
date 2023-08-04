@@ -108,7 +108,7 @@ import matplotlib.pyplot as plt
 
 #     return True
 
-
+phase_diff_std=0
 
 def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.04):
     """
@@ -123,6 +123,8 @@ def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.04):
     """
     import numpy as np
     from scipy.signal import hilbert
+    
+    global phase_diff_std
     
     # 计算希尔伯特变换
     analytic_signal = hilbert(preprocessed_signal)
@@ -180,7 +182,10 @@ def identify_signal(preprocessed_signal, window_size=1000):
         signal_type='AM'
     elif amplitude_envelope_diff <= 0.001 and np.mean(np.abs(instantaneous_frequency)) >= 2e6:
         # print('信号是频率调制（FM）。')
-        signal_type='FM'
+        if phase_diff_std<0.07:
+            signal_type='FM'
+        if phase_diff_std>=0.07:
+            signal_type='2PSK'
     elif np.mean(np.abs(instantaneous_frequency)) <= 1.8e6:
         signal_type='2ASK'
     else:

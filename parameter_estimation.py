@@ -59,6 +59,8 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
             signal_type_ensure='2ASK'
         if signal_type == 'FM':
             signal_type_ensure='2FSK'
+    else:
+        signal_type_ensure=signal_type
 
     params['type']=signal_type_ensure
     
