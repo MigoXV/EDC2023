@@ -21,7 +21,8 @@ def T_counter(demodulated_signal):
     # 一个周期应该包含两个零点交叉（一个从正到负，一个从负到正）
     num_periods = len(valid_crossings_diff) / 2
 
-    print("The number of sine wave periods in the signal: ", num_periods)
+    return num_periods
+    # print("The number of sine wave periods in the signal: ", num_periods)
 
 
 def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
@@ -57,6 +58,9 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
         # params['mf'] = 0  # 占位符
         params['delta_f_max'] = 0  # 占位符
 
+    # 找到周期数
+    params['T_num']=T_counter(demodulated_signal)
+    
     # 以此类推，对于其他类型的信号，我们也可以添加相应的参数估计代码...
     with open('parameter.json','w',encoding='UTF-8') as f:
         f.write(json.dumps(params))
