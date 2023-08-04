@@ -4,6 +4,7 @@ import json
 import matplotlib.pyplot as plt
 # from scipy.fft import fft,fftfreq
 import math
+import signal_identification
 
 def T_counter(demodulated_signal,signal_type):
 
@@ -21,7 +22,7 @@ def T_counter(demodulated_signal,signal_type):
 
     # 一个周期应该包含两个零点交叉（一个从正到负，一个从负到正）
     num_periods = len(valid_crossings_diff) / 2
-
+    num_periods = math.ceil(num_periods)
     # if signal_type=='AM':
     #     num_periods=math.ceil(num_periods)
     # elif signal_type=='FM':
@@ -54,14 +55,18 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
     # 这可能涉及到复杂的信号处理和机器学习技术，
     # 这些技术超出了这个例子的范围。
 
-    if T_num>=5.2:
-        if signal_type == 'AM':
-            signal_type_ensure='2ASK'
-        if signal_type == 'FM':
-            signal_type_ensure='2FSK'
-    else:
-        signal_type_ensure=signal_type
+    # if T_num>=5.2:
+    #     if signal_type == 'AM':
+    #         signal_type_ensure='2ASK'
+    #     if signal_type == 'FM':
+    #         signal_type_ensure='2FSK'
+    # else:
+    #     signal_type_ensure=signal_type
 
+    if signal_type=='AM' or signal_type=='2ASK':
+        signal_type_ensure=signal_type
+    elif signal_type=='FMor2FSK':
+        signal_type_ensure=signal_identification.fm_or_2fsk_demodulated(demodulated_signal)
     params['type']=signal_type_ensure
     
     if signal_type_ensure == 'AM':
@@ -75,7 +80,7 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
         # 这可能需要通过傅里叶变换或其他频率分析技术来实现
         # 这里我们只是用一个占位符来代替真实的估计值
         # params['mf'] = 0  # 占位符
-        params['delta_f_max'] = 0  # 占位符
+        params['delta_f_max'] = params['DFmax']  # 占位符
 
 
     
