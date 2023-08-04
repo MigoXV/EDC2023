@@ -26,11 +26,12 @@ def main():
     # 识别信号类型
     signal_type = signal_identification.identify_signal(preprocessed_signal)
 
-    print("信号类型为：",signal_type)
+    # print("信号类型为：",signal_type)
 
     if signal_type=='CW':
         demodulated_signal=preprocessed_signal
         np.savetxt('result.dat',demodulated_signal)
+        print('signal type:CW')
     else:
         # 解调信号
         demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)
