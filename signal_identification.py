@@ -110,7 +110,7 @@ import matplotlib.pyplot as plt
 
 phase_diff_std=0
 
-def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.045):
+def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6, threshold=0.0415):
     """
     判断输入的信号是否为单一载波信号。
     参数：
