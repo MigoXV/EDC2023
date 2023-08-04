@@ -60,7 +60,36 @@ def fm_demodulation(data):
     return baseband
 
 def psk_demodulation(modulated_wave):
-    pass
+    import scipy.signal as signal
+    # 定义采样率和载波频率
+    fs = 8e6
+    fc = 2e6
+
+    # 定义载波时间
+    time = np.arange(0, len(modulated_wave) / fs, 1 / fs)
+    
+    # 生成载波
+    carrier = np.sin(2 * np.pi * fc * time)
+    
+    # 乘法混频
+    product = modulated_wave * carrier
+
+    # 定义低通滤波器的截止频率为码速率的上限，这里取10kHz
+    cutoff_freq = 10e3
+    
+    # 定义滤波器的滤波器阶数，根据经验，选择一个较小的值，例如10
+    numtaps = 10
+    
+    # 使用firwin函数设计低通滤波器
+    fir_coeff = signal.firwin(numtaps, cutoff=cutoff_freq, fs=fs)
+    
+    # 使用lfilter函数对信号进行滤波
+    demodulated_wave = signal.lfilter(fir_coeff, 1.0, product)
+    
+    # 因为2PSK信号的值在0和1之间，我们可以使用0.5作为阈值进行判决
+    demodulated_wave = np.where(demodulated_wave > 0.5, 1, 0)
+    
+    return demodulated_wave
 
 def demodulate_signal(signal_type, preprocessed_signal):
     """
@@ -110,10 +139,10 @@ def demodulate_signal(signal_type, preprocessed_signal):
     return demodulated_signal
 
 if __name__=="__main__":
-    data=np.loadtxt('data.dat')
+    data=np.loadtxt('data-test.dat')
     filterd_data=my_filter.pre_filter(data)
-    result=demodulate_signal('FM',filterd_data)
-    print("设置:5K")
+    result=demodulate_signal('2PSK',filterd_data)
+    # print("设置:5K")
     print('max_frequency_deviation:',max_frequency_deviation)
     plt.plot(result)
     plt.show()
