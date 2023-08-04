@@ -17,10 +17,11 @@ def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6):
     返回值：
         bool，如果输入的信号是单一载波信号，返回True，否则返回False。
     """
-    threshold=160
+    threshold=0.08
     fft_data=np.fft.fft(preprocessed_signal)
     fft_data_abs=abs(fft_data)
-    if np.max(fft_data_abs)>160:
+    fft_data_abs_normalized=fft_data_abs/np.sum(fft_data_abs)
+    if np.max(fft_data_abs_normalized)>threshold:
         return True
     return False
     
