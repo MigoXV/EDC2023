@@ -38,6 +38,8 @@ def fm_demodulation(data):
     # max_frequency_deviation = np.max(np.abs(frequency_deviation[200:-199]))
     max_frequency_deviation = np.max(np.abs((frequency_deviation - np.mean(frequency_deviation))[200:-199]))
     
+    max_frequency_deviation=0.00094897*max_frequency_deviation+-919.26156234
+    
     params={}
     params["DFmax"]=max_frequency_deviation
 
@@ -49,6 +51,7 @@ def fm_demodulation(data):
     baseband = frequency_deviation - 2e6
     
     baseband=baseband/np.max(baseband[2000:6000])
+    
     
     with open('parameter.json','w',encoding='UTF-8') as f:
         f.write(json.dumps(params))
