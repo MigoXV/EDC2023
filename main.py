@@ -58,7 +58,11 @@ def main():
         plt.savefig('data.png')
         plt.clf()
         plt.plot(result)
-        plt.savefig('result.png')        
+        plt.savefig('result.png')   
+        
+        times+=1
+             
+        print()
     
     # 关闭设备
     signal_IO.close_device()
