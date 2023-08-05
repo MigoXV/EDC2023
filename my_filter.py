@@ -51,8 +51,8 @@ def AM_filter_after(origin_signal):
 
 def FM_filter_after(origin_signal):
     a=1
-    numtaps=91
-    B=scipy.signal.firwin(numtaps,[4.8e3/fs,5.2e3/fs],pass_zero=False)
+    numtaps=191
+    B=scipy.signal.firwin(numtaps,[0.9e3/fs,5.1e3/fs],pass_zero=False)
     # plt.plot(abs(np.fft.fft(B)))
     # plt.show()
     output_signal=np.convolve(B,origin_signal,'same')
@@ -61,8 +61,8 @@ def FM_filter_after(origin_signal):
 # 1.97M-2.03M
 def pre_filter(origin_signal):
     a=1
-    numtaps=7
-    B=scipy.signal.firwin(numtaps,[1.99e6/fs,2.01e6/fs],pass_zero=False)
+    numtaps=3
+    B=scipy.signal.firwin(numtaps,[1.9e6/fs,2.1e6/fs],pass_zero=False)
     # plt.plot(abs(np.fft.fft(B)))
     # plt.show()
     output_signal=np.convolve(B,origin_signal,'same')
@@ -76,6 +76,15 @@ def phase_filter(origin_signal):
     # plt.show()
     output_signal=np.convolve(B,origin_signal,'same')
     return output_signal        
+ 
+def cw_filter(origin_signal):
+    a=1
+    numtaps=50
+    B=scipy.signal.firwin(numtaps,[1.9e6/fs,2.1e6/fs],pass_zero=False)
+    # plt.plot(abs(np.fft.fft(B)))
+    # plt.show()
+    output_signal=np.convolve(B,origin_signal,'same')
+    return output_signal    
 
 if __name__=="__main__":
     test_filter('data.dat',AM_filter_before)
