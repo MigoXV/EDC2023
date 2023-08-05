@@ -81,12 +81,12 @@ def estimate_parameters(signal_type_ensured, demodulated_signal, preprocessed_si
         ma = 2*(np.max(demodulated_signal[200:7800]) - np.min(demodulated_signal[200:7800]))/(
             np.max(preprocessed_signal[200:7800]) - np.min(preprocessed_signal[200:7800]))
         # ma = ma*1.2710863155094008252182992122047-0.3213175708408039188486140810474
-        # a = 1.6665867348459082
-        # b = -0.7583466975592283
-        # c = -1.4545079628726665
-        # d = 2.0646620477523925
-        # e = -0.19408674567914688
-        # ma = a * ma**4 + b * ma**3 + c * ma**2 + d * ma + e
+        a = 12.926240
+        b = -27.107531
+        c = 20.741007
+        d = -5.796494
+        e = 0.631982
+        ma = a * ma**4 + b * ma**3 + c * ma**2 + d * ma + e
         params['ma'] = ma
     elif signal_type_ensured == 'FM':
         # 对于 'FM' 信号，我们可能需要估计调频系数 'mf' 和最大频偏 'delta_f_max'
