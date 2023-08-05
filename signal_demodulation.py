@@ -112,18 +112,36 @@ def psk_demodulation(modulated_wave):
     autocorrelations = [np.correlate(multiplied, np.roll(multiplied, -int(sampling_rate/rate)), 'valid')
                         for rate in symbol_rates]
 
-    # 找出哪个自相关函数的峰值最大
-    symbol_rate_index = np.argmax([np.max(auto) for auto in autocorrelations])
-
+    #计算三个相关函数的峰值
+    polars=[np.max(auto) for auto in autocorrelations]
+    print('6k,8k,10k polar:',[np.max(auto) for auto in autocorrelations])
+    
     # 确定正确的码速率
-    correct_rate = symbol_rates[symbol_rate_index]
+    if polars[1]>2.5:
+        correct_rate=symbol_rates[1]
+    elif polars[2]>2.5:
+        correct_rate=symbol_rates[2]
+    else:
+        correct_rate=symbol_rates[0]
+    print('correct_rate=',correct_rate)
+    
+    y=np.cos(2*np.pi*correct_rate*t)
+    # 输出解调后的波形
+    square_wave = signal.square(y)
+    # # 找出哪个自相关函数的峰值最大
+    # symbol_rate_index = np.argmax([np.max(auto) for auto in autocorrelations])
+    # print('6k,8k,10k polar:',[np.max(auto) for auto in autocorrelations])
+    # # 确定正确的码速率
+    
+    # correct_rate = symbol_rates[symbol_rate_index]
+    # print('correct_rate=',correct_rate)
 
-    # 低通滤波以抑制二倍频率的成分
-    b, a = signal.butter(5, correct_rate*1.2/(sampling_rate/2), 'low')
-    demodulated_wave = signal.lfilter(b, a, multiplied)
+    # # 低通滤波以抑制二倍频率的成分
+    # b, a = signal.butter(5, correct_rate*1.2/(sampling_rate/2), 'low')
+    # demodulated_wave = signal.lfilter(b, a, multiplied)
 
-    # 将连续的解调波形转换为离散的方波
-    square_wave = np.sign(demodulated_wave)
+    # # 将连续的解调波形转换为离散的方波
+    # square_wave = np.sign(demodulated_wave)
 
     return square_wave
 
