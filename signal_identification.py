@@ -118,7 +118,8 @@ def fm_or_2fsk_demodulated(demodulated_signal):
     else:
         return 'FM'
     
-
+def type_ensure():
+    pass
 
 if __name__=="__main__":
     data=np.loadtxt('data-am.dat')

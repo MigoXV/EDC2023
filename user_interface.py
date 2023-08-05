@@ -43,7 +43,7 @@ def display_signal_info(signal_type, signal_params):
     返回:
         None
     """
-    print('type=',signal_params['type'])
+    print('type=',signal_type)
     # print(f'Signal type: {signal_type}')
     if signal_type == 'AM':
         print('f=',round(signal_params['T_num']),'kHz')

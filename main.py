@@ -58,7 +58,9 @@ def main():
             # 解调信号
             demodulated_signal = signal_demodulation.demodulate_signal(signal_type[count],preprocessed_signal)
             np.savetxt('result.dat',demodulated_signal)
-            
+        
+        for count in range(average_times):
+        
             # 参数估计
             parameters[count] = parameter_estimation.estimate_parameters(signal_type[count],demodulated_signal,preprocessed_signal)
         
