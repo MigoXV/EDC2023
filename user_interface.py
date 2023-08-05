@@ -44,7 +44,7 @@ def display_signal_info(signal_type, signal_params):
         None
     """
 
-    print(f'Signal type: {signal_type}')
+    # print(f'Signal type: {signal_type}')
 
     for param_name, param_value in signal_params.items():
         print(f'{param_name}: {param_value}')

@@ -144,7 +144,9 @@ def demodulate_signal(signal_type, preprocessed_signal):
     # 根据信号的类型来解调信号。
     # 这可能涉及到复杂的信号处理和机器学习技术，
     # 这些技术超出了这个例子的范围。
-
+    if signal_type == 'CW':
+        demodulate_signal=preprocessed_signal
+        return demodulate_signal
     if signal_type == 'AM' or signal_type == '2ASK':
 
         demodulated_signal = am_demodulation(preprocessed_signal)
@@ -172,7 +174,7 @@ def demodulate_signal(signal_type, preprocessed_signal):
         filted_signal[:139] = filted_signal[139]
         filted_signal[-140:] = filted_signal[-140]
         return filted_signal        
-    return demodulated_signal
+    return filted_signal
 
 if __name__=="__main__":
     data=np.loadtxt('data-test.dat')
