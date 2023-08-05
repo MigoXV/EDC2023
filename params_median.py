@@ -13,7 +13,7 @@ def paramater_type(params_cache, average_times):
     key_cache = ['']*average_times
 
     for index in range(average_times):
-        key_cache[index] = params_cache[index]['type']
+        key_cache[index] = params_cache[index]
 
     result = max(set(key_cache), key=key_cache.count)
 

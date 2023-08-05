@@ -147,8 +147,10 @@ def demodulate_signal(signal_type, preprocessed_signal):
         filted_signal=demodulated_signal
         filted_signal[:139] = filted_signal[139]
         filted_signal[-140:] = filted_signal[-140]
-        return filted_signal        
-    return filted_signal
+        return filted_signal     
+    
+    print('unknown type')   
+    return 0
 
 if __name__=="__main__":
     data=np.loadtxt('data-test.dat')

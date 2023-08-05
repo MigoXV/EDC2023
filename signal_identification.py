@@ -79,6 +79,8 @@ def identify_signal(preprocessed_signal, window_size=1000):
         # print('信号是频率调制（FM）。')
         phase_diff_std=get_phase_diff_std(preprocessed_signal)
         
+        # print('phase_diff_std=',phase_diff_std)
+
         if phase_diff_std<0.075:
             signal_type='FMor2FSK'
         else:
