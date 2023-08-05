@@ -36,7 +36,8 @@ def main():
             break
         
         parameters=[{}]*average_times
-        
+        signal_type=['']*average_times
+
         for count in range(average_times):
         
             # 采样信号
@@ -47,7 +48,11 @@ def main():
             preprocessed_signal=signal_sample
             
             # 识别信号类型
-            signal_type = signal_identification.identify_signal(preprocessed_signal)
+            signal_type[count] = signal_identification.identify_signal(preprocessed_signal)
+
+        parameter_type=params_median.paramater_type(signal_type,average_times)
+
+        for count in range(average_times):
 
             # 解调信号
             demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)
@@ -56,7 +61,6 @@ def main():
             # 参数估计
             parameters[count] = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
         
-        parameter_type=params_median.paramater_type(parameters,average_times)
         # parameter_average['type']=parameter_type
         parameter_average=params_median.parameter_median(parameter_type,parameters,average_times)
         
