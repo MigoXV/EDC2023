@@ -44,35 +44,66 @@ rgdSamples_output = (c_double*nSamples)()
 # eg:       print('\033[0;36m abc \033[0m')
 #open device
 
-dwf.FDwfDeviceOpen(c_int(-1), byref(hdwf))
-print("===========================================================================")
-print("\033[0;31mdevice opened \033[0m")
+# dwf.FDwfDeviceOpen(c_int(-1), byref(hdwf))
+# print("===========================================================================")
+# print("\033[0;31mdevice opened \033[0m")
 
 
-if hdwf.value == hdwfNone.value:
-    szerr = create_string_buffer(512)
-    dwf.FDwfGetLastErrorMsg(szerr)
-    print(szerr.value)
-    print("033[0;31m failed to open device \033[0m")
-    quit()
+# if hdwf.value == hdwfNone.value:
+#     szerr = create_string_buffer(512)
+#     dwf.FDwfGetLastErrorMsg(szerr)
+#     print(szerr.value)
+#     print("033[0;31m failed to open device \033[0m")
+#     quit()
 
-# cBufMax = c_int()
-# dwf.FDwfAnalogInBufferSizeInfo(hdwf, 0, byref(cBufMax))
-# print("Device buffer size: "+str(cBufMax.value)) 
+# # cBufMax = c_int()
+# # dwf.FDwfAnalogInBufferSizeInfo(hdwf, 0, byref(cBufMax))
+# # print("Device buffer size: "+str(cBufMax.value)) 
 
-def signal_sampling():
+# #set up acquisition
+# dwf.FDwfAnalogInFrequencySet(hdwf, c_double(fs))
+# dwf.FDwfAnalogInBufferSizeSet(hdwf, c_int(nSamples)) 
+# dwf.FDwfAnalogInChannelEnableSet(hdwf, c_int(-1), c_bool(True))
+# dwf.FDwfAnalogInChannelRangeSet(hdwf, c_int(-1), c_double(5))
+# dwf.FDwfAnalogInChannelFilterSet(hdwf, c_int(-1), filterDecimate)
 
-    global sts,hdwf
-    rgdSamples_input = (c_double*nSamples)()
+# #wait at least 2 seconds for the offset to stabilize
+# time.sleep(2)
+
+def initialize_device():
+    global hdwf
+    dwf.FDwfDeviceOpen(c_int(-1), byref(hdwf))
+    print("===========================================================================")
+    print("\033[0;31mdevice opened \033[0m")
+
+
+    if hdwf.value == hdwfNone.value:
+        szerr = create_string_buffer(512)
+        dwf.FDwfGetLastErrorMsg(szerr)
+        print(szerr.value)
+        print("033[0;31m failed to open device \033[0m")
+        quit()
+
+    # cBufMax = c_int()
+    # dwf.FDwfAnalogInBufferSizeInfo(hdwf, 0, byref(cBufMax))
+    # print("Device buffer size: "+str(cBufMax.value)) 
+
     #set up acquisition
     dwf.FDwfAnalogInFrequencySet(hdwf, c_double(fs))
     dwf.FDwfAnalogInBufferSizeSet(hdwf, c_int(nSamples)) 
     dwf.FDwfAnalogInChannelEnableSet(hdwf, c_int(-1), c_bool(True))
     dwf.FDwfAnalogInChannelRangeSet(hdwf, c_int(-1), c_double(5))
     dwf.FDwfAnalogInChannelFilterSet(hdwf, c_int(-1), filterDecimate)
-
+    
     #wait at least 2 seconds for the offset to stabilize
     time.sleep(2)
+    
+    
+def signal_sampling():
+
+    global sts,hdwf
+    rgdSamples_input = (c_double*nSamples)()
+
 
     print("Starting oscilloscope")
     dwf.FDwfAnalogInConfigure(hdwf, c_int(1), c_int(1))
@@ -113,8 +144,10 @@ def signal_output(data):
     dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(2.0))
     dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
     
-    dwf.FDwfDeviceCloseAll()
 
+def close_device():
+    dwf.FDwfDeviceCloseAll()
+ 
 
 def test():
     
