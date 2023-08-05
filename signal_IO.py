@@ -28,6 +28,9 @@ with open('config.json') as f:
 
 nSamples=result['nSamples']
 fs=result['fs']
+
+dwf.FDwfParamSet(c_int(4), c_int(0))
+
 #declare ctype variables
 hdwf = c_int()
 sts = c_byte()
@@ -59,7 +62,7 @@ if hdwf.value == hdwfNone.value:
 
 def signal_sampling():
 
-    global sts,rgdSamples_input
+    global sts,rgdSamples_input,hdwf
     
     #set up acquisition
     dwf.FDwfAnalogInFrequencySet(hdwf, c_double(fs))
@@ -84,7 +87,7 @@ def signal_sampling():
 
     dwf.FDwfAnalogInStatusData(hdwf, 0, rgdSamples_input, nSamples) # get channel 1 data
     #dwf.FDwfAnalogInStatusData(hdwf, 1, rgdSamples, 4000) # get channel 2 data
-    dwf.FDwfDeviceCloseAll()
+    # dwf.FDwfDeviceCloseAll()
 
     # #plot window
     # dc = sum(rgdSamples)/len(rgdSamples)
@@ -104,7 +107,7 @@ def signal_output(data):
         
     print("Generating custom waveform from file result.dat")
     dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
-    dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine) 
+    dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcCustom) 
     dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples_output, c_int(nSamples))
     dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(fs/nSamples)) 
     dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(2.0))
@@ -113,14 +116,84 @@ def signal_output(data):
     dwf.FDwfDeviceCloseAll()
 
 
+def test():
+    
+    global sts,rgdSamples_input,hdwf
+    
+    
+    # #set up acquisition
+    # dwf.FDwfAnalogInFrequencySet(hdwf, c_double(fs))
+    # dwf.FDwfAnalogInBufferSizeSet(hdwf, c_int(nSamples)) 
+    # dwf.FDwfAnalogInChannelEnableSet(hdwf, c_int(-1), c_bool(True))
+    # dwf.FDwfAnalogInChannelRangeSet(hdwf, c_int(-1), c_double(5))
+    # dwf.FDwfAnalogInChannelFilterSet(hdwf, c_int(-1), filterDecimate)
+
+    # #wait at least 2 seconds for the offset to stabilize
+    # time.sleep(2)
+
+    # print("Starting oscilloscope")
+    # dwf.FDwfAnalogInConfigure(hdwf, c_int(1), c_int(1))
+
+
+    # while True:
+    #     dwf.FDwfAnalogInStatus(hdwf, c_int(1), byref(sts))
+    #     if sts.value == DwfStateDone.value :
+    #         break
+    #     time.sleep(0.1)
+    # print("Acquisition done")
+
+    # dwf.FDwfAnalogInStatusData(hdwf, 0, rgdSamples_input, nSamples) # get channel 1 data
+    # # dwf.FDwfDeviceCloseAll()
+    data=numpy.loadtxt('data.dat')
+    for i in range(nSamples):
+        rgdSamples_output[i] = c_double(float(data[i]))
+    # =========================输出部分===========================================
+    channel = c_int(0)
+    print("Generating custom waveform from file result.dat")
+    dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
+    dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine) 
+    dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples_input, c_int(nSamples))
+    dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(fs/nSamples)) 
+    dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(2.0))
+    dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
+    
+    dwf.FDwfDeviceCloseAll()
+
+# if __name__=='__main__':
+#     test()
+
 if __name__=='__main__':
     in_data=signal_sampling()
-    dwf.FDwfDeviceCloseAll()
-    plt.plot(in_data)
-    plt.show()
-    numpy.savetxt('result.dat',in_data)
+    # in_data=numpy.loadtxt('data.dat')
+    # plt.plot(in_data)
+    # plt.show()
+    signal_output(in_data)
+    # dwf.FDwfDeviceCloseAll()
+
     # signal_output(in_data)
-    import signal_output
+    
+    
+    # channel = c_int(0)
+    
+    # # global rgdSamples_output
+    
+    # for i in range(nSamples):
+    #     rgdSamples_output[i] = c_double(float(in_data[i]))
+        
+    # print("Generating custom waveform from file result.dat")
+    # dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
+    # dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine) 
+    # dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples_output, c_int(nSamples))
+    # dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(fs/nSamples)) 
+    # dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(2.0))
+    # dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
+    
+    # dwf.FDwfDeviceCloseAll()
+
+    # plt.plot(in_data)
+    # plt.show()
+    # numpy.savetxt('result.dat',in_data)
+    # import signal_output
     
     # data=numpy.loadtxt('data.dat')
     # plt.plot(data)
