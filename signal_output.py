@@ -25,6 +25,9 @@ else:
 with open('config.json') as f:
     result=json.loads(f.read())
 
+with open('parameter.json') as f:
+    params=json.loads(f.read())
+
 cSamples=result['nSamples']
 hzFreq=result['fs']
 
@@ -68,12 +71,20 @@ for i in range(cSamples):
 # dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0.1))
 # dwf.FDwfAnalogOutNodeOffsetSet(hdwf, channel, AnalogOutNodeCarrier, c_double(0))
 
-print("Generating custom waveform from file result.dat")
+if params['type']=='AM' or params['type']=='FM':
+    output_wave_form=funcSine
+    output_wave_amplitude=params['ma']*2
+else:
+    output_wave_form=funcTriangle
+
+output_wave_frequency=params['T_num']*1000
+
+print("Generating demodulated waveform from file result.dat")
 dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
-dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcCustom) 
-dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples, c_int(cSamples))
-dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(hzFreq/cSamples)) 
-dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(2.0))
+dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, output_wave_form) 
+# dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples, c_int(cSamples))
+dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(output_wave_frequency)) 
+dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(output_wave_amplitude))
 dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
 
 dwf.FDwfDeviceCloseAll()
