@@ -23,7 +23,7 @@ def parameter_average(signal_type,params_cache,average_times):
 
     if signal_type == "AM":
         params['ma']=get_key_average(params_cache,average_times,'ma')
-    elif signal_type == "FM":
+    elif signal_type == "FM" or signal_type == "FMor2FSK":
         params['DFmax']=get_key_average(params_cache,average_times,'DFmax')
     else:
         pass

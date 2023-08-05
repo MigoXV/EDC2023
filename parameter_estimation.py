@@ -112,10 +112,10 @@ def estimate_parameters(signal_type, demodulated_signal, preprocessed_signal):
         #     params['DFmax'], a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
         params['delta_f_max'] = params['DFmax']  # 占位符
 
-        filted_signal = my_filter.FM_filter_after(demodulated_signal)
-        filted_signal[:89] = filted_signal[89]
-        filted_signal[-90:] = filted_signal[-90]
-        np.savetxt('result.dat', filted_signal)
+        # filted_signal = my_filter.FM_filter_after(demodulated_signal)
+        # filted_signal[:89] = filted_signal[89]
+        # filted_signal[-90:] = filted_signal[-90]
+        # np.savetxt('result.dat', filted_signal)
 
     # 以此类推，对于其他类型的信号，我们也可以添加相应的参数估计代码...
     with open('parameter.json', 'w', encoding='UTF-8') as f:
