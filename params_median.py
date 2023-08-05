@@ -8,7 +8,7 @@ import signal_identification
 import my_filter
 import json
 
-def get_key_average(params_cache,average_times,key):
+def get_key_median(params_cache,average_times,key):
     key_cache=[0]*average_times
     for count in range(average_times):
         key_cache[count]=params_cache[count][key]
@@ -19,12 +19,12 @@ def get_key_average(params_cache,average_times,key):
 def parameter_average(signal_type,params_cache,average_times):
     params={}
     
-    params['T_num']=get_key_average(params_cache,average_times,'T_num')
+    params['T_num']=get_key_median(params_cache,average_times,'T_num')
 
     if signal_type == "AM":
-        params['ma']=get_key_average(params_cache,average_times,'ma')
+        params['ma']=get_key_median(params_cache,average_times,'ma')
     elif signal_type == "FM" or signal_type == "FMor2FSK":
-        params['DFmax']=get_key_average(params_cache,average_times,'DFmax')
+        params['DFmax']=get_key_median(params_cache,average_times,'DFmax')
     else:
         pass
     
