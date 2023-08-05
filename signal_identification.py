@@ -79,6 +79,8 @@ def identify_signal(preprocessed_signal, window_size=1000):
         # print('信号是频率调制（FM）。')
         phase_diff_std=get_phase_diff_std(preprocessed_signal)
         
+        # print('phase_diff_std=',phase_diff_std)
+
         if phase_diff_std<0.075:
             signal_type='FMor2FSK'
         else:
@@ -116,7 +118,12 @@ def fm_or_2fsk_demodulated(demodulated_signal):
     else:
         return 'FM'
     
-
+def type_ensure(type_before,demodulated_signal):
+    
+    if type_before!='FMor2FSK':
+        return type_before
+    else:
+        return fm_or_2fsk_demodulated(demodulated_signal)
 
 if __name__=="__main__":
     data=np.loadtxt('data-am.dat')

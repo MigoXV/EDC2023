@@ -13,7 +13,7 @@ def paramater_type(params_cache, average_times):
     key_cache = ['']*average_times
 
     for index in range(average_times):
-        key_cache[index] = params_cache[index]['type']
+        key_cache[index] = params_cache[index]
 
     result = max(set(key_cache), key=key_cache.count)
 
@@ -32,9 +32,6 @@ def get_key_median(params_cache, average_times, key):
 def parameter_median(signal_type, params_cache, average_times):
     params = {}
 
-    list = ['1', '2', '3', '6', '5', '6', '6', '2', '1']
-    result = max(set(list), key=list.count)
-    print(result)
     params['type'] = signal_type
     params['T_num'] = get_key_median(params_cache, average_times, 'T_num')
 

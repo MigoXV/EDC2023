@@ -36,7 +36,9 @@ def main():
             break
         
         parameters=[{}]*average_times
-        
+        signal_type_list=['']*average_times
+        preprocessed_signal=[np.zeros(8000)]*average_times
+
         for count in range(average_times):
         
             # 采样信号
@@ -44,19 +46,29 @@ def main():
 
             # 预处理信号
             # preprocessed_signal = signal_preprocessing.preprocess_signal(signal_sample)
-            preprocessed_signal=signal_sample
+            preprocessed_signal[count]=signal_sample
             
             # 识别信号类型
-            signal_type = signal_identification.identify_signal(preprocessed_signal)
+            signal_type_list[count] = signal_identification.identify_signal(preprocessed_signal[count])
+
+        parameter_type_unensure=params_median.paramater_type(signal_type_list,average_times)
+        signal_type_list=[parameter_type_unensure]*20
+
+        for count in range(average_times):
 
             # 解调信号
-            demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)
+            demodulated_signal = signal_demodulation.demodulate_signal(signal_type_list[count],preprocessed_signal[count])
             np.savetxt('result.dat',demodulated_signal)
-            
-            # 参数估计
-            parameters[count] = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
         
-        parameter_type=params_median.paramater_type(parameters,average_times)
+            signal_type_list[count]=signal_identification.type_ensure(signal_type_list[count],demodulated_signal)
+ 
+        parameter_type=params_median.paramater_type(signal_type_list,average_times)
+
+        for count in range(average_times):
+        
+            # 参数估计
+            parameters[count] = parameter_estimation.estimate_parameters(parameter_type,demodulated_signal,preprocessed_signal)
+        
         # parameter_average['type']=parameter_type
         parameter_average=params_median.parameter_median(parameter_type,parameters,average_times)
         

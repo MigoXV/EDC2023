@@ -79,7 +79,7 @@ def psk_demodulation(modulated_wave):
 
     #计算三个相关函数的峰值
     polars=[np.max(auto) for auto in autocorrelations]
-    print('6k,8k,10k polar:',[np.max(auto) for auto in autocorrelations])
+    # print('6k,8k,10k polar:',[np.max(auto) for auto in autocorrelations])
     
     # 确定正确的码速率
     if polars[1]>2.5:
@@ -88,7 +88,7 @@ def psk_demodulation(modulated_wave):
         correct_rate=symbol_rates[2]
     else:
         correct_rate=symbol_rates[0]
-    print('correct_rate=',correct_rate)
+    # print('correct_rate=',correct_rate)
     
     y=np.cos(2*np.pi*correct_rate*t)
     # 输出解调后的波形
@@ -147,8 +147,10 @@ def demodulate_signal(signal_type, preprocessed_signal):
         filted_signal=demodulated_signal
         filted_signal[:139] = filted_signal[139]
         filted_signal[-140:] = filted_signal[-140]
-        return filted_signal        
-    return filted_signal
+        return filted_signal     
+    
+    print('unknown type')   
+    return 0
 
 if __name__=="__main__":
     data=np.loadtxt('data-test.dat')
