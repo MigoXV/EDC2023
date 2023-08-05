@@ -10,24 +10,27 @@ import user_interface
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import signal_IO
 
 def main():
     params={}
     with open('parameter.json','w',encoding='UTF-8') as f:
         f.write(json.dumps(params))
+    # while True:
+        
+    # 初始化设备
+    signal_IO.initialize_device()
     
     # 采样信号
-    import signal_sampling #不采样调试时注释本行
-    signal_sample = np.loadtxt("data.dat")
+    signal_sample=signal_IO.signal_sampling()
 
     # 预处理信号
     # preprocessed_signal = signal_preprocessing.preprocess_signal(signal_sample)
     preprocessed_signal=signal_sample
+    
     # 识别信号类型
     signal_type = signal_identification.identify_signal(preprocessed_signal)
 
-    # print("信号类型为：",signal_type)
- 
     # 解调信号
     demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)
     np.savetxt('result.dat',demodulated_signal)
@@ -40,16 +43,19 @@ def main():
     result=np.loadtxt('result.dat')
     result=result-result.mean()
     np.savetxt('result.dat',result)
+    
     # 输出解调信号供示波器观测
-    user_interface.output_signal()
+    signal_IO.signal_output(result)
 
     # 采样信号、解调信号绘图
-    # plt.figure()
     plt.plot(signal_sample)
     plt.savefig('data.png')
     plt.clf()
     plt.plot(result)
     plt.savefig('result.png')
+    
+    # 关闭设备
+    signal_IO.close_device()
     
     
 if __name__ == "__main__":
