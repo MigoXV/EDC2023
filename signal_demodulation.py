@@ -95,7 +95,7 @@ def psk_demodulation(modulated_wave):
     square_wave = signal.square(y)
 
     params={}
-    params["Rc"]=int(correct_rate/2000)
+    params["Rc"]=correct_rate
     with open('parameter.json','w',encoding='UTF-8') as f:
         f.write(json.dumps(params))
         

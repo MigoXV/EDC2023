@@ -54,7 +54,7 @@ def estimate_parameters(signal_type, demodulated_signal, preprocessed_signal):
     #     params['T_num'] = T_num
 
     if signal_type == '2PSK':
-        T_num=params['Rc']
+        T_num=int(params['Rc']/2000)
     elif signal_type == 'CW':
         pass
     else:

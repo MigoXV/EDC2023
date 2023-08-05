@@ -46,7 +46,8 @@ def main():
             preprocessed_signal=signal_sample
             
             # 识别信号类型
-            signal_type = signal_identification.identify_signal(preprocessed_signal)
+            # signal_type = signal_identification.identify_signal(preprocessed_signal)
+            signal_type = 'AM'
 
             # 解调信号
             demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)

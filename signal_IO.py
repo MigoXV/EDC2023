@@ -105,7 +105,7 @@ def signal_sampling():
     rgdSamples_input = (c_double*nSamples)()
 
 
-    print("Starting oscilloscope")
+    # print("Starting oscilloscope")
     dwf.FDwfAnalogInConfigure(hdwf, c_int(1), c_int(1))
 
 
@@ -114,7 +114,7 @@ def signal_sampling():
         if sts.value == DwfStateDone.value :
             break
         time.sleep(0.1)
-    print("Acquisition done")
+    # print("Acquisition done")
 
     dwf.FDwfAnalogInStatusData(hdwf, 0, rgdSamples_input, nSamples) # get channel 1 data
     #dwf.FDwfAnalogInStatusData(hdwf, 1, rgdSamples, 4000) # get channel 2 data
