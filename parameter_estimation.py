@@ -33,12 +33,12 @@ def T_counter(demodulated_signal, signal_type):
     # print("The number of sine wave periods in the signal: ", num_periods)
 
 
-def estimate_parameters(signal_type, demodulated_signal, preprocessed_signal):
+def estimate_parameters(signal_type_ensured, demodulated_signal, preprocessed_signal):
     """
     根据预处理过的信号和它的类型估计信号的参数。
 
     参数:
-        signal_type (str): 信号的类型，例如 'AM', 'FM', 'CW', '2ASK', '2PSK', '2FSK'。
+        signal_type_ensured (str): 信号的类型，例如 'AM', 'FM', 'CW', '2ASK', '2PSK', '2FSK'。
         preprocessed_signal (np.array): 预处理过的信号。
 
     返回:
@@ -53,13 +53,13 @@ def estimate_parameters(signal_type, demodulated_signal, preprocessed_signal):
     #     T_num = T_counter(demodulated_signal, signal_type)
     #     params['T_num'] = T_num
 
-    if signal_type == '2PSK':
+    if signal_type_ensured == '2PSK':
         T_num=int(params['Rc']/2000)
-    elif signal_type == 'CW':
+    elif signal_type_ensured == 'CW':
         pass
     else:
         # 找到周期数
-        T_num = T_counter(demodulated_signal, signal_type)
+        T_num = T_counter(demodulated_signal, signal_type_ensured)
     
     params['T_num'] = T_num
 
@@ -67,15 +67,15 @@ def estimate_parameters(signal_type, demodulated_signal, preprocessed_signal):
     # 这可能涉及到复杂的信号处理和机器学习技术，
     # 这些技术超出了这个例子的范围。
 
-    if signal_type == 'AM' or signal_type == '2ASK' or signal_type == '2PSK' or signal_type == 'CW':
-        signal_type_ensure = signal_type
-    elif signal_type == 'FMor2FSK':
-        signal_type_ensure = signal_identification.fm_or_2fsk_demodulated(
-            demodulated_signal)
+    # if signal_type == 'AM' or signal_type == '2ASK' or signal_type == '2PSK' or signal_type == 'CW':
+    #     signal_type_ensure = signal_type
+    # elif signal_type == 'FMor2FSK':
+    #     signal_type_ensure = signal_identification.fm_or_2fsk_demodulated(
+    #         demodulated_signal)
         
-    params['type'] = signal_type_ensure
+    params['type'] = signal_type_ensured
 
-    if signal_type_ensure == 'AM':
+    if signal_type_ensured == 'AM':
         # 示例: 对于 'AM' 信号，我们可能会估计调幅系数 'ma'，
         # 这可以通过测量信号的峰峰值来简单地估计
         ma = 2*(np.max(demodulated_signal[200:7800]) - np.min(demodulated_signal[200:7800]))/(
@@ -88,7 +88,7 @@ def estimate_parameters(signal_type, demodulated_signal, preprocessed_signal):
         # e = -0.19408674567914688
         # ma = a * ma**4 + b * ma**3 + c * ma**2 + d * ma + e
         params['ma'] = ma
-    elif signal_type_ensure == 'FM':
+    elif signal_type_ensured == 'FM':
         # 对于 'FM' 信号，我们可能需要估计调频系数 'mf' 和最大频偏 'delta_f_max'
         # 这可能需要通过傅里叶变换或其他频率分析技术来实现
         # 这里我们只是用一个占位符来代替真实的估计值
