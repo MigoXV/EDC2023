@@ -62,7 +62,7 @@ def main():
             # 参数估计
             parameters[count] = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
 
-        parameter_average=params_median.parameter_average(signal_type,parameters,average_times)
+        parameter_average=params_median.parameter_median(signal_type,parameters,average_times)
         
         # 显示结果
         user_interface.display_signal_info(signal_type, parameter_average)

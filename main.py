@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import json
 import signal_IO
 import params_average
+import params_median
 
 def main():
     parameter_average={}
@@ -24,15 +25,15 @@ def main():
     
     times=0
     
-    average_times=100
+    average_times=20
     
     
     while True:
         # 一键启动
         print('---------按enter键开始第',times+1,'次测量---------------')
-        # key=input()
-        # if key=='quit':
-        #     break
+        key=input()
+        if key=='quit':
+            break
         
         parameters=[{}]*average_times
         
@@ -54,11 +55,13 @@ def main():
             
             # 参数估计
             parameters[count] = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
-
-        parameter_average=params_average.parameter_average(signal_type,parameters,average_times)
+        
+        parameter_type=params_median.paramater_type(parameters,average_times)
+        # parameter_average['type']=parameter_type
+        parameter_average=params_median.parameter_median(parameter_type,parameters,average_times)
         
         # 显示结果
-        user_interface.display_signal_info(signal_type, parameter_average)
+        user_interface.display_signal_info(parameter_type, parameter_average)
         result=np.loadtxt('result.dat')
         result=result-result.mean()
         np.savetxt('result.dat',result)
