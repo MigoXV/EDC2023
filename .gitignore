@@ -10,3 +10,4 @@ frequency_deviation.dat
 parameter.json
 *.dat
 parameter.json
+.vscode/settings.json

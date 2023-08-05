@@ -20,7 +20,9 @@ def main():
         
     # 初始化设备
     signal_IO.initialize_device()
+    
     times=0
+    
     while True:
         # 一键启动
         print('---------按enter键开始第',times+1,'次测量，输入\'quit\'退出---------')
