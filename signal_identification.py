@@ -3,9 +3,23 @@ from scipy.signal import hilbert, fftconvolve
 from scipy.fftpack import fft, fftfreq
 import matplotlib.pyplot as plt
 
+def get_phase_diff_std(preprocessed_signal):
+    
+    phase_diff_std=0
+    
+    # 计算希尔伯特变换
+    analytic_signal = hilbert(preprocessed_signal)
+    
+    # 计算相位
+    phase = np.unwrap(np.angle(analytic_signal))
+    
+    # 计算相位差
+    phase_diff = np.diff(phase)
+    
+    # 对于一个单一载波信号，相位差应该是恒定的，我们可以通过检查相位差的标准差来看是否存在调制
+    phase_diff_std = np.std(phase_diff)
 
-
-phase_diff_std=0
+    return phase_diff_std
 
 def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6):
     """
@@ -17,7 +31,7 @@ def is_cw(preprocessed_signal, fs=8e6, carrier_freq=2e6):
     返回值：
         bool，如果输入的信号是单一载波信号，返回True，否则返回False。
     """
-    threshold=0.08
+    threshold=0.105
     fft_data=np.fft.fft(preprocessed_signal)
     fft_data_abs=abs(fft_data)
     fft_data_abs_normalized=fft_data_abs/np.sum(fft_data_abs)
@@ -63,6 +77,8 @@ def identify_signal(preprocessed_signal, window_size=1000):
         signal_type='AM'
     elif amplitude_envelope_diff <= 0.001 and np.mean(np.abs(instantaneous_frequency)) >= 2e6:
         # print('信号是频率调制（FM）。')
+        phase_diff_std=get_phase_diff_std(preprocessed_signal)
+        
         if phase_diff_std<0.075:
             signal_type='FMor2FSK'
         else:

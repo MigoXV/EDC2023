@@ -59,41 +59,6 @@ def fm_demodulation(data):
     
     return baseband
 
-# def psk_demodulation(modulated_wave):
-#     import scipy.signal as signal
-#     # 定义采样率和载波频率
-#     fs = 8e6
-#     fc = 2e6
-
-#     # 定义载波时间
-#     time = np.arange(8000)/fs
-    
-#     # 生成载波
-#     carrier = np.sin(2 * np.pi * fc * time)
-    
-#     # 乘法混频
-#     product = modulated_wave * carrier
-
-#     plt.plot(product)
-#     plt.title('product')
-#     plt.show()
-#     # 定义低通滤波器的截止频率为码速率的上限，这里取10kHz
-#     cutoff_freq = 10e3
-    
-#     # 定义滤波器的滤波器阶数，根据经验，选择一个较小的值，例如10
-#     numtaps = 10
-    
-#     # 使用firwin函数设计低通滤波器
-#     fir_coeff = signal.firwin(numtaps, cutoff=cutoff_freq, fs=fs)
-    
-#     # 使用lfilter函数对信号进行滤波
-#     demodulated_wave = signal.lfilter(fir_coeff, 1.0, product)
-    
-#     # 因为2PSK信号的值在0和1之间，我们可以使用0.5作为阈值进行判决
-#     demodulated_wave = np.where(demodulated_wave > 0.5, 1, 0)
-    
-#     return demodulated_wave
-
 def psk_demodulation(modulated_wave):
     import scipy.signal as signal
     # 声明采样率，载波频率，可能的码速率
@@ -112,19 +77,28 @@ def psk_demodulation(modulated_wave):
     autocorrelations = [np.correlate(multiplied, np.roll(multiplied, -int(sampling_rate/rate)), 'valid')
                         for rate in symbol_rates]
 
-    # 找出哪个自相关函数的峰值最大
-    symbol_rate_index = np.argmax([np.max(auto) for auto in autocorrelations])
-
+    #计算三个相关函数的峰值
+    polars=[np.max(auto) for auto in autocorrelations]
+    print('6k,8k,10k polar:',[np.max(auto) for auto in autocorrelations])
+    
     # 确定正确的码速率
-    correct_rate = symbol_rates[symbol_rate_index]
+    if polars[1]>2.5:
+        correct_rate=symbol_rates[1]
+    elif polars[2]>2.5:
+        correct_rate=symbol_rates[2]
+    else:
+        correct_rate=symbol_rates[0]
+    print('correct_rate=',correct_rate)
+    
+    y=np.cos(2*np.pi*correct_rate*t)
+    # 输出解调后的波形
+    square_wave = signal.square(y)
 
-    # 低通滤波以抑制二倍频率的成分
-    b, a = signal.butter(5, correct_rate*1.2/(sampling_rate/2), 'low')
-    demodulated_wave = signal.lfilter(b, a, multiplied)
-
-    # 将连续的解调波形转换为离散的方波
-    square_wave = np.sign(demodulated_wave)
-
+    params={}
+    params["Rc"]=int(correct_rate/2000)
+    with open('parameter.json','w',encoding='UTF-8') as f:
+        f.write(json.dumps(params))
+        
     return square_wave
 
 def demodulate_signal(signal_type, preprocessed_signal):
@@ -144,7 +118,9 @@ def demodulate_signal(signal_type, preprocessed_signal):
     # 根据信号的类型来解调信号。
     # 这可能涉及到复杂的信号处理和机器学习技术，
     # 这些技术超出了这个例子的范围。
-
+    if signal_type == 'CW':
+        demodulate_signal=preprocessed_signal
+        return demodulate_signal
     if signal_type == 'AM' or signal_type == '2ASK':
 
         demodulated_signal = am_demodulation(preprocessed_signal)
@@ -172,7 +148,7 @@ def demodulate_signal(signal_type, preprocessed_signal):
         filted_signal[:139] = filted_signal[139]
         filted_signal[-140:] = filted_signal[-140]
         return filted_signal        
-    return demodulated_signal
+    return filted_signal
 
 if __name__=="__main__":
     data=np.loadtxt('data-test.dat')

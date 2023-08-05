@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import signal_sampling
-data=np.loadtxt('data.dat')
+data=np.loadtxt('result.dat')
 fft_data=np.fft.fft(data)
 fft_data_abs=abs(fft_data)
 fft_data_abs_normalized=fft_data_abs/np.sum(fft_data_abs)
