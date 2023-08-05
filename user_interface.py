@@ -43,11 +43,19 @@ def display_signal_info(signal_type, signal_params):
     返回:
         None
     """
-
+    print('type=',signal_params['type'])
     # print(f'Signal type: {signal_type}')
-
-    for param_name, param_value in signal_params.items():
-        print(f'{param_name}: {param_value}')
+    if signal_type == 'AM':
+        print('f=',round(signal_params['T_num']),'kHz')
+        print('ma=',signal_params['ma'])
+    elif signal_type == 'FM':
+        print('f=',round(signal_params['T_num']),'kHz')
+        print('DFmax=',signal_params['DFmax'],'kHz')
+        print('mf=',signal_params['DFmax']/signal_params['T_num'])
+    elif signal_type == 'CW':
+        pass
+    elif signal_type == '2ASK' or signal_type == '2FSK' or signal_type == '2PSK':
+        print('Rc=',round(signal_params['T_num'])*2,'kHz')
         
 def display_results():
     pass

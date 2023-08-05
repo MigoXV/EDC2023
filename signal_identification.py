@@ -67,8 +67,8 @@ def identify_signal(preprocessed_signal, window_size=1000):
     # 计算幅度包络的滑动窗口变化率
     amplitude_envelope_diff = np.std(fftconvolve(amplitude_envelope, np.ones(window_size), 'valid') / window_size)
 
-    print('amplitude_envelope_diff:',amplitude_envelope_diff)
-    print('np.mean(np.abs(instantaneous_frequency)):',np.mean(np.abs(instantaneous_frequency)))
+    # print('amplitude_envelope_diff:',amplitude_envelope_diff)
+    # print('np.mean(np.abs(instantaneous_frequency)):',np.mean(np.abs(instantaneous_frequency)))
     
     # 检查信号是AM还是FM
     # if amplitude_envelope_diff > 0.001 and np.mean(np.abs(instantaneous_frequency)) < 2e6:
