@@ -132,9 +132,12 @@ def signal_output(data):
     with open('parameter.json') as f:
         params=json.loads(f.read())
         
-    if params['type']=='AM' or params['type']=='FM':
+    if params['type']=='AM':
         output_wave_form=funcSine
-        output_wave_amplitude=params['ma']*2
+        output_wave_amplitude=(1+params['ma'])/2
+    elif params['type']=='FM':
+        output_wave_form=funcSine
+        output_wave_amplitude=(1+params['DFmax']/params['T_num']/10)/2        
     else:
         output_wave_form=funcSquare
         
@@ -144,13 +147,13 @@ def signal_output(data):
     
     global rgdSamples_output
     
-    for i in range(nSamples):
-        rgdSamples_output[i] = c_double(float(data[i]))
+    # for i in range(nSamples):
+    #     rgdSamples_output[i] = c_double(float(data[i]))
         
     print("Generating custom waveform from file result.dat")
     dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
     dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, output_wave_form) 
-    dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples_output, c_int(nSamples))
+    # dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples_output, c_int(nSamples))
     dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(output_wave_frequency)) 
     dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(output_wave_amplitude))
     dwf.FDwfAnalogOutConfigure(hdwf, channel, c_int(1))
