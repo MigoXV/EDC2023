@@ -140,6 +140,7 @@ def signal_output(data):
         output_wave_amplitude=(1+params['DFmax']/params['T_num']/10)/2        
     else:
         output_wave_form=funcSquare
+        output_wave_amplitude=0.6
         
     output_wave_frequency=params['T_num']*1000
     

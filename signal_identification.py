@@ -69,18 +69,22 @@ def identify_signal(preprocessed_signal, window_size=1000):
 
     # print('amplitude_envelope_diff:',amplitude_envelope_diff)
     # print('np.mean(np.abs(instantaneous_frequency)):',np.mean(np.abs(instantaneous_frequency)))
-    
+    m_a_instantaneous_frequency=np.mean(np.abs(instantaneous_frequency))
+
+    # print('amplitude_envelope_diff:',amplitude_envelope_diff)
+    # print('m_a_instantaneous_frequency',m_a_instantaneous_frequency)
+    # print('phase_diff_std',get_phase_diff_std(preprocessed_signal))
     # 检查信号是AM还是FM
     # if amplitude_envelope_diff > 0.001 and np.mean(np.abs(instantaneous_frequency)) < 2e6:
-    if amplitude_envelope_diff > 0.001 and np.mean(np.abs(instantaneous_frequency)) >= 1.8e6:
+    if amplitude_envelope_diff > 0.001 and m_a_instantaneous_frequency >= 1.8e6:
         # print('信号是幅度调制（AM）。')
         signal_type='AM'
-    elif amplitude_envelope_diff <= 0.001 and np.mean(np.abs(instantaneous_frequency)) >= 2e6:
+    elif amplitude_envelope_diff <= 0.001 and m_a_instantaneous_frequency >= 2e6:
         # print('信号是频率调制（FM）。')
         phase_diff_std=get_phase_diff_std(preprocessed_signal)
         
         # print('phase_diff_std=',phase_diff_std)
-
+        # print('phase_diff_std:',phase_diff_std)
         if phase_diff_std<0.075:
             signal_type='FMor2FSK'
         else:
@@ -89,7 +93,8 @@ def identify_signal(preprocessed_signal, window_size=1000):
         signal_type='2ASK'
     else:
         # print('信号不能明确地对应AM或FM调制。')
-        signal_type='unknown'
+        
+        signal_type='FMor2FSK'
     return signal_type
 
 def fm_or_2fsk_demodulated(demodulated_signal):

@@ -58,7 +58,7 @@ def main():
 
             # 解调信号
             demodulated_signal = signal_demodulation.demodulate_signal(signal_type_list[count],preprocessed_signal[count])
-            np.savetxt('result.dat',demodulated_signal)
+            # np.savetxt('result.dat',demodulated_signal)
         
             signal_type_list[count]=signal_identification.type_ensure(signal_type_list[count],demodulated_signal)
  
@@ -67,7 +67,7 @@ def main():
         for count in range(average_times):
         
             # 参数估计
-            parameters[count] = parameter_estimation.estimate_parameters(parameter_type,demodulated_signal,preprocessed_signal)
+            parameters[count] = parameter_estimation.estimate_parameters(parameter_type,demodulated_signal,preprocessed_signal[count])
         
         # parameter_average['type']=parameter_type
         parameter_average=params_median.parameter_median(parameter_type,parameters,average_times)
