@@ -47,24 +47,16 @@ def estimate_parameters(signal_type, demodulated_signal,preprocessed_signal):
     with open('parameter.json','r',encoding='utf-8') as f:
         params=json.loads(f.read())
     # params = {}
-
-    # 找到周期数
-    T_num=T_counter(demodulated_signal,signal_type)
-    params['T_num']=T_num
+    if signal_type != 'CW':
+        # 找到周期数
+        T_num=T_counter(demodulated_signal,signal_type)
+        params['T_num']=T_num
 
     # 根据信号的类型来估计参数。
     # 这可能涉及到复杂的信号处理和机器学习技术，
     # 这些技术超出了这个例子的范围。
 
-    # if T_num>=5.2:
-    #     if signal_type == 'AM':
-    #         signal_type_ensure='2ASK'
-    #     if signal_type == 'FM':
-    #         signal_type_ensure='2FSK'
-    # else:
-    #     signal_type_ensure=signal_type
-
-    if signal_type=='AM' or signal_type=='2ASK' or signal_type=='2PSK':
+    if signal_type=='AM' or signal_type=='2ASK' or signal_type=='2PSK' or signal_type=='CW':
         signal_type_ensure=signal_type
     elif signal_type=='FMor2FSK':
         signal_type_ensure=signal_identification.fm_or_2fsk_demodulated(demodulated_signal)

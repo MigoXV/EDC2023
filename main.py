@@ -27,21 +27,16 @@ def main():
     signal_type = signal_identification.identify_signal(preprocessed_signal)
 
     # print("信号类型为：",signal_type)
+ 
+    # 解调信号
+    demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)
+    np.savetxt('result.dat',demodulated_signal)
+    
+    # 参数估计
+    parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
 
-    if signal_type=='CW':
-        demodulated_signal=preprocessed_signal
-        np.savetxt('result.dat',demodulated_signal)
-        print('signal type:CW')
-    else:
-        # 解调信号
-        demodulated_signal = signal_demodulation.demodulate_signal(signal_type,preprocessed_signal)
-        np.savetxt('result.dat',demodulated_signal)
-        
-        # 参数估计
-        parameters = parameter_estimation.estimate_parameters(signal_type,demodulated_signal,preprocessed_signal)
-
-        # 显示结果
-        user_interface.display_signal_info(signal_type, parameters)
+    # 显示结果
+    user_interface.display_signal_info(signal_type, parameters)
     result=np.loadtxt('result.dat')
     result=result-result.mean()
     np.savetxt('result.dat',result)
