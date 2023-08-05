@@ -29,7 +29,7 @@ def main():
     
     while True:
         # 一键启动
-        print('---------按enter键开始第',times+1,'次测量，输入\'quit\'退出---------')
+        print('---------按enter键开始第',times+1,'次测量---------------')
         # key=input()
         # if key=='quit':
         #     break
