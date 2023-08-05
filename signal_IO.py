@@ -97,12 +97,14 @@ def signal_output(data):
     
     channel = c_int(0)
     
+    global rgdSamples_output
+    
     for i in range(nSamples):
         rgdSamples_output[i] = c_double(float(data[i]))
         
     print("Generating custom waveform from file result.dat")
     dwf.FDwfAnalogOutNodeEnableSet(hdwf, channel, AnalogOutNodeCarrier, c_bool(True))
-    dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcCustom) 
+    dwf.FDwfAnalogOutNodeFunctionSet(hdwf, channel, AnalogOutNodeCarrier, funcSine) 
     dwf.FDwfAnalogOutNodeDataSet(hdwf, channel, AnalogOutNodeCarrier, rgdSamples_output, c_int(nSamples))
     dwf.FDwfAnalogOutNodeFrequencySet(hdwf, channel, AnalogOutNodeCarrier, c_double(fs/nSamples)) 
     dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, channel, AnalogOutNodeCarrier, c_double(2.0))
